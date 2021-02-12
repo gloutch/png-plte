@@ -1,18 +1,27 @@
+BASEDIR = ../
+include ../header.mk
+
+
+
+EXEC=test
+
+
+$(EXEC): main.c
+	$(CC) $(CFLAGS) $(CUNIT) main.c -o $(EXEC)
+
+
+
 TEST_OUTPUT=test-suite
 TEST_SUITE_URL=http://www.schaik.com/pngsuite/PngSuite-2017jul19.tgz
 
+prepare: $(TEST_OUTPUT)
 
-run-ut:
-	echo nothing.
-
-prepare:
+$(TEST_OUTPUT):
 	mkdir $(TEST_OUTPUT)
 	curl $(TEST_SUITE_URL) --output test-suite.tar --progress-bar
 	tar zxf test-suite.tar --directory $(TEST_OUTPUT)
+	rm test-suite.tar
 
 
-.PHONY: clean
 
-clean:
-	rm -f test-suite.tar
-	rm -rf $(TEST_OUTPUT)
+include ../footer.mk

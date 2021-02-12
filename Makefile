@@ -1,16 +1,4 @@
 BASEDIR = ./
-include globals.mk
+include header.mk
 
-
-
-.PHONY: main test
-
-all:
-	@$(MAKE) -C $(SRC_DIR)
-
-test:
-	@$(MAKE) -C $(TST_DIR)
-
-
-
-include generic.mk
+include footer.mk

@@ -1,16 +1,15 @@
 BASEDIR = ../
-include ../globals.mk
+include ../header.mk
 
 
-
-TARGET = $(addprefix $(BIN_DIR), $(EXEC_NAME))
 
 SOURCES = $(wildcard *.c)
 HEADERS = $(wildcard *.h)
 OBJECTS = $(addprefix $(BIN_DIR), $(HEADERS:.h=.o))
 
+.PHONY: all
 
-$(TARGET): $(OBJECTS)
+all: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) main.c -o $(TARGET)
 
 $(OBJECTS): $(BIN_DIR)%.o : $(SRC_DIR)%.c $(SRC_DIR)%.h
@@ -19,4 +18,4 @@ $(OBJECTS): $(BIN_DIR)%.o : $(SRC_DIR)%.c $(SRC_DIR)%.h
 
 
 
-include ../generic.mk
+include ../footer.mk
