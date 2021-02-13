@@ -4,7 +4,7 @@
 # > must include globals.mk first
 #
 
-.PHONY: clean doc help
+.PHONY: clean doc test help
 
 clean:
 	@rm -f *~ \#*\#
@@ -13,6 +13,9 @@ clean:
 doc:
 	cd $(BASEDIR) && doxygen Doxyfile
 	open $(DOC_DIR)index.html
+
+test:
+	$(MAKE) -C $(TST_DIR) run-test
 
 help:
 	@echo "make        : compile only sources"

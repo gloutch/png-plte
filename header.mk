@@ -12,8 +12,8 @@ BIN_DIR = $(BASEDIR)bin/
 DOC_DIR = $(BASEDIR)doc/
 
 # target
-TARGET_NAME = PngPlte
-TARGET      = $(BIN_DIR)$(TARGET_NAME)
+TARGET      = $(BIN_DIR)png-plte
+TARGET_TEST = $(BIN_DIR)cunit-test
 
 # makefile flood
 VERBOSE = yes
@@ -34,5 +34,5 @@ ZLIB  = -lz
 
 # default target
 $(TARGET):
-	@$(MAKE) -C $(SRC_DIR) all
+	$(MAKE) -C $(SRC_DIR) all
 	@echo "> $(TARGET)"
