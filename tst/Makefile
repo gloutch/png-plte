@@ -5,7 +5,7 @@ include ../header.mk
 
 .PHONY: run-test prepare
 
-run-test: $(TARGET_TEST)
+run-test: $(TARGET_TEST) prepare
 	$(TARGET_TEST)
 
 $(TARGET_TEST): $(TARGET) $(SUITE_FOLDER)

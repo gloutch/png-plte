@@ -1,21 +1,27 @@
+/**
+ * @file mfile.c
+ * @brief In memory file
+ * @details
+ */
+
 
 #include "mfile.h"
 
 
-struct mfile map_mfile(const char *pathname) {
-  // printf("file %s\n", pathname);
+const struct mfile map_file(const char *pathname) {
+  LOG_INFO("Opening file %s", pathname);
 
   int fd = open(pathname, O_RDONLY);
   if (fd < 0) {
-    perror("Can't open the file");
-    exit(0);
+    LOG_FATAL("Can't open the file: %s", pathname);
+    exit(1);
   }
 
   struct stat st;
   if (fstat(fd, &st) != 0) {
-    perror("Can't obtain stats about the file");
+    LOG_FATAL("Can't get stats about the file: %s", pathname);
     close(fd);
-    exit(0);
+    exit(1);
   }
 
   size_t file_size = (size_t) st.st_size;
@@ -25,45 +31,44 @@ struct mfile map_mfile(const char *pathname) {
 
   void * file_ptr = mmap(NULL, mult_size, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0);
   if (file_ptr == MAP_FAILED) {
-    perror("Can't map the file in memory");
+    LOG_FATAL("Can't map the file [%s:%zd] in memory (asked size %zd)", pathname, file_size, mult_size);
     close(fd);
-    exit(0);
+    exit(1);
   }
 
   if (close(fd) != 0) {
-    perror("Can't close the file");
-    exit(0);
+    LOG_ERROR("Can't close the file: %s", pathname);
   }
 
-  struct mfile res;
-  res.pathname  = pathname;
-  res.ptr       = file_ptr;
-  res.size      = file_size;
-  res.real_size = mult_size;
-
+  LOG_DEBUG("file %s mapped in %p (size %zd)", pathname, file_ptr, file_size);
+  const struct mfile res = {
+    .pathname       = pathname,
+    .ptr            = file_ptr,
+    .file_size      = file_size,
+    .allocated_size = mult_size,
+  };
   return res;
 }
 
-void munmap_mfile(struct mfile *file) {
-  if (munmap(file->ptr, file->real_size) != 0) {
-    perror("Can't unmap the file");
-    exit(0);
+
+void unmap_file(const struct mfile *file) {
+  if (munmap(file->ptr, file->allocated_size) != 0) {
+    LOG_ERROR("Can't munmap the file: %s (allocated size %zd)", file->pathname, file->allocated_size);
   }
-  file->ptr = NULL;
 }
 
 
 
 int mfile_is_png(const struct mfile *file) {
 
-  // http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html#PNG-file-signature
   const int n = 8;
   uint8_t sig[] = {137, 80, 78, 71, 13, 10, 26, 10};
 
   for (int i = 0; i < n; i++) {
     if (sig[i] != (file->ptr)[i]) {
+      LOG_WARN("file %s failed PNG signature", file->pathname);
       return 0;
-    }		
+    }
   }
   return 1;
 }

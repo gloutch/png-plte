@@ -24,8 +24,9 @@ MAKE += -s
 endif
 
 # compilation
-CC      = cc
-CFLAGS  = -std=c99 -Wall
+CC     = cc
+CFLAGS = -std=c99 -Wall
+LOG    = INFO
 
 # libraries
 CUNIT = -lcunit
@@ -33,6 +34,6 @@ SDL   = -lSDL2
 ZLIB  = -lz
 
 # default target
-$(TARGET):
+$(TARGET): ./header.mk $(SRC_DIR)*
 	$(MAKE) -C $(SRC_DIR) all
 	@echo "> $(TARGET)"

@@ -11,7 +11,7 @@ clean:
 	@rm -rf $(BIN_DIR) $(DOC_DIR)
 
 doc:
-	cd $(BASEDIR) && doxygen Doxyfile
+	cd $(BASEDIR) && doxygen Doxyfile | grep warning | echo "Warnings:"
 	open $(DOC_DIR)index.html
 
 test:

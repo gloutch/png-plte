@@ -3,18 +3,18 @@ include ../header.mk
 
 
 
-SOURCES = $(wildcard *.c)
 HEADERS = $(wildcard *.h)
-OBJECTS = $(addprefix $(BIN_DIR), $(HEADERS:.h=.o))
+SOURCES = $(filter-out main.c, $(wildcard *.c))
+OBJECTS = $(addprefix $(BIN_DIR), $(SOURCES:.c=.o))
 
 .PHONY: all
 
-all: $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) main.c -o $(TARGET)
+all: main.c $(HEADERS) $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -DLOG_LEVEL=$(LOG) main.c -o $(TARGET)
 
 $(OBJECTS): $(BIN_DIR)%.o : $(SRC_DIR)%.c $(SRC_DIR)%.h
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -DLOG_LEVEL=$(LOG) -c $< -o $@
 
 
 

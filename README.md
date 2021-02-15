@@ -3,12 +3,18 @@
 This is a readme
 
 
-## Test
+## Documentation
 
-To run unit test, go in the `tst` folder and run
+As I tend to leave a project for several months straight,
+I tough it would be nice to write some documentation using [Doxygen](https://www.doxygen.nl/manual/commands.html)
+in order come back easier each time.
+
+See each file begins with
 ```
-make prepare
-make run-ut
+/**
+ * @file
+ * @brief
+ * @details
+ */
 ```
-The first line download the test suite of PNG images.
-The second one run the whole cunit collection.
+And each function must be well described!
