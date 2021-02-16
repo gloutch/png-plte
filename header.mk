@@ -25,8 +25,8 @@ endif
 
 # compilation
 CC     = cc
-CFLAGS = -std=c99 -Wall
 LOG    = INFO
+CFLAGS = -std=c99 -Wall -DLOG_LEVEL=$(LOG)
 
 # libraries
 CUNIT = -lcunit
