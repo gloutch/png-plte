@@ -8,6 +8,7 @@
 #include "mfile.h"
 
 
+
 const struct mfile map_file(const char *pathname) {
   LOG_INFO("Opening file %s", pathname);
 
@@ -49,6 +50,7 @@ const struct mfile map_file(const char *pathname) {
   };
   return res;
 }
+
 
 
 void unmap_file(const struct mfile *file) {

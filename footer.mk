@@ -22,4 +22,4 @@ help:
 	@echo "make clean  : clean all"
 	@echo "make doc    : generate Doxygen files (html)"
 	@echo "make help   : print help"
-	@echo "make test   : compile and run tests"
+	@echo "make test   : compile and run tests (maybe use LOG=NONE)"

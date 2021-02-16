@@ -11,7 +11,7 @@
 
 
 /*
- * log values
+ * Log values
  */
 
 /** @brief level logeverything */
@@ -37,11 +37,11 @@
 #endif
 
 /** @brief prefix format for one liner log */
-#define LOG_PREFIX(level) (printf("%-5s : %s %d %s() -- ", level, __FILE__, __LINE__, __func__))
+#define LOG_PREFIX(level) (printf("%-5s : %s %d %s()     ", level, __FILE__, __LINE__, __func__))
 
 
 /*
- * log functions
+ * Log functions
  * Cannot find a way to factorize this
  */
 
@@ -88,9 +88,8 @@
 #endif
 
 
-
 /**
- * @brief Log the log level compiled with (as a trace log)
+ * @brief Log the LOG_LEVEL compiled with (as non classic log)
  */
 #if (LOG_LEVEL == ALL)
   #define LOG_LOG_LEVEL() puts("Log level -> ALL")
@@ -109,6 +108,9 @@
 
 #elif (LOG_LEVEL == FATAL)
   #define LOG_LOG_LEVEL() puts("Log level -> FATAL")
+
+#else // LOG_LEVEL == NONE
+  #define LOG_LOG_LEVEL() puts("Log level -> NONE") 
 #endif
   
 

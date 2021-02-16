@@ -1,27 +1,16 @@
+/**
+ * @file main.c
+ * @brief The main test
+ * @details
+ */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <CUnit/Basic.h>
 
-
-int init_suite1(void)
-{
-  return 0;
-}
-
-int clean_suite1(void)
-{
-  return 0;
-}
-
-void testFPRINTF(void)
-{
-  printf("bof");
-}
-
-void testFREAD(void)
-{
-  CU_ASSERT_TRUE(0);
-}
+#include "log.h"
+#include "test-mfile.h"
 
 
 
@@ -44,16 +33,17 @@ void add_test(CU_pSuite pSuite, const char* strName, CU_TestFunc pTestFunc) {
 }
 
 
-int main()
-{
+int main() {
+   LOG_LOG_LEVEL();
+   
    /* initialize the CUnit test registry */
    if (CUE_SUCCESS != CU_initialize_registry())
       return CU_get_error();
 
-
-   CU_pSuite pSuite1 = add_suite("Suite_1", init_suite1, clean_suite1);
-   add_test(pSuite1, "test of fprintf()", testFPRINTF);
-   add_test(pSuite1, "test of fread()", testFREAD);
+   
+   CU_pSuite pSuite1 = add_suite("mfile", init_test_mfile, clean_test_mfile);
+   add_test(pSuite1, "check mfile_is_png success", check_png_mfile);
+   add_test(pSuite1, "check mfile_is_png failed", check_none_png_mfile);
    
 
    /* Run all tests using the CUnit Basic interface */

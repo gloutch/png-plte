@@ -36,6 +36,7 @@ struct mfile {
 /**
  * @brief Map a file to the memory
  * @param[in] pathname Path to the file to open
+ * @return the allocated file
  */
 const struct mfile map_file(const char *pathname);
 
@@ -49,6 +50,7 @@ void unmap_file(const struct mfile *file);
  * @brief Check for the 8-byte signature at the beginning of the file
  * @details [PNG-file-signature](http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html#PNG-file-signature)
  * @param[in] file The allocated file to check in
+ * @return 0 is file is not a PNG, 1 otherwise
  */
 int mfile_is_png(const struct mfile *file);
 
