@@ -4,15 +4,15 @@ include ../header.mk
 
 
 HEADERS = $(wildcard *.h)
-SOURCES = $(filter-out main.c, $(wildcard *.c))
+SOURCES = $(wildcard *.c)
 OBJECTS = $(addprefix $(BIN_DIR), $(SOURCES:.c=.o))
 
 .PHONY: all
 
 all: main.c $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) main.c -o $(TARGET)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(TARGET)
 
-$(OBJECTS): $(BIN_DIR)%.o : $(SRC_DIR)%.c $(SRC_DIR)%.h
+$(OBJECTS): $(BIN_DIR)%.o : $(SRC_DIR)%.c
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 

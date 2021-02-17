@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file test.c
  * @brief The main test
  * @details
  */
