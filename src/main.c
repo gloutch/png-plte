@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   LOG_LOG_LEVEL();
 
   if (argc < 2) {
-    LOG_ERROR("%s <file expected>", argv[0]);
+    printf("%s <file expected>\n", argv[0]);
     exit(1);
   }
 

@@ -1,7 +1,7 @@
 /**
  * @file log.h
  * @brief Log levels and log functions
- * @details Log functions are actually macros define at compile time thanks to LOG_LEVEL
+ * @details Log functions are actually macros defined at compile time thanks to LOG_LEVEL
  */
 
 #ifndef LOG_LEVEL_H
@@ -110,7 +110,7 @@
   #define LOG_LOG_LEVEL() puts("Log level -> FATAL")
 
 #else // LOG_LEVEL == NONE
-  #define LOG_LOG_LEVEL() puts("Log level -> NONE") 
+  #define LOG_LOG_LEVEL()
 #endif
   
 
