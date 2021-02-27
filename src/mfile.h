@@ -5,9 +5,10 @@
  * Then access the file only using pointers.
  */
 
-#ifndef MFILE_H
-#define MFILE_H
+#ifndef __MFILE_H__
+#define __MFILE_H__
 
+#include <assert.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,10 +23,10 @@
  * @brief Handle some data about mapped file
  */
 struct mfile {
-  /** @brief Path to the mapped file */
+  /** @brief Pointer to the path to the mapped file */
   const char *pathname;
   /** @brief Pointer to the beginning of the mapped file */
-  uint8_t *ptr;
+  void *data;
   /** @brief File size */
   size_t file_size;
   /** @brief Allocated size */
@@ -48,7 +49,8 @@ void unmap_file(const struct mfile *file);
 
 /**
  * @brief Check for the 8-byte signature at the beginning of the file
- * @details [PNG-file-signature](http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html#PNG-file-signature)
+ * @details The PNG signature is 8 bytes described in 
+ * [PNG-file-signature](http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html#PNG-file-signature)
  * @param[in] file The allocated file to check in
  * @return 0 is file is not a PNG, 1 otherwise
  */
@@ -56,4 +58,4 @@ int mfile_is_png(const struct mfile *file);
 
 
 
-#endif // MFILE_H
+#endif // __MFILE_H__

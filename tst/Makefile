@@ -32,16 +32,16 @@ $(TST_OBJECTS): $(BIN_DIR)%.o : $(TST_DIR)%.c
 
 
 # Download png test suite
-SUITE_FOLDER=test-suite
+SUITE_FOLDER=suite
 TEST_SUITE_URL=http://www.schaik.com/pngsuite/PngSuite-2017jul19.tgz
 
 prepare: $(SUITE_FOLDER)
 
 $(SUITE_FOLDER):
 	mkdir $(SUITE_FOLDER)
-	curl $(TEST_SUITE_URL) --output test-suite.tar --progress-bar
-	tar zxf test-suite.tar --directory $(SUITE_FOLDER)
-	rm test-suite.tar
+	curl $(TEST_SUITE_URL) --output suite.tar --progress-bar
+	tar zxf suite.tar --directory $(SUITE_FOLDER)
+	rm suite.tar
 
 
 

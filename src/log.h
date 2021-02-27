@@ -4,8 +4,8 @@
  * @details Log functions are actually macros defined at compile time thanks to LOG_LEVEL
  */
 
-#ifndef LOG_LEVEL_H
-#define LOG_LEVEL_H
+#ifndef __LOG_H__
+#define __LOG_H__
 
 #include <stdio.h>
 
@@ -16,7 +16,7 @@
 
 /** @brief level logeverything */
 #define ALL    (0)
-/** @brief every details (too much) */
+/** @brief every details (basically a printf in log) */
 #define TRACE  (1)
 /** @brief diagnostic, program data like pointers */
 #define DEBUG  (2)
@@ -33,7 +33,7 @@
 
 /** @brief default log level */
 #ifndef LOG_LEVEL
-#define LOG_LEVEL INFO
+  #define LOG_LEVEL INFO
 #endif
 
 /** @brief prefix format for one liner log */
@@ -82,7 +82,7 @@
 
 /** @brief compiled fatal log macro */
 #if (LOG_LEVEL <= FATAL)
-#define LOG_FATAL(fmt, ...) LOG_PREFIX("FATAL"); printf((fmt), ##__VA_ARGS__); puts("")
+  #define LOG_FATAL(fmt, ...) LOG_PREFIX("FATAL"); printf((fmt), ##__VA_ARGS__); puts("")
 #else
   #define LOG_FATAL(...)
 #endif
@@ -115,4 +115,4 @@
   
 
 
-#endif // LOG_LEVEL_H
+#endif // __LOG_H__

@@ -4,11 +4,8 @@
  * @details
  */
 
-
-#include <CUnit/Basic.h>
-
+#include "test-mfile.h"
 #include "mfile.h"
-
 
 
 int init_test_mfile(void) {
@@ -22,13 +19,13 @@ int clean_test_mfile(void) {
 
 
 void check_png_mfile(void) {
-  const struct mfile file = map_file("test-suite/PngSuite.png");
+  const struct mfile file = map_file("suite/PngSuite.png");
   CU_ASSERT_TRUE(mfile_is_png(&file));
   unmap_file(&file);
 }
 
 void check_none_png_mfile(void) {
-  const struct mfile file = map_file("test-suite/PngSuite.README");
+  const struct mfile file = map_file("suite/PngSuite.README");
   CU_ASSERT_FALSE(mfile_is_png(&file));
   unmap_file(&file);
 }

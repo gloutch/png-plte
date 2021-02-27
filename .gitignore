@@ -1,4 +1,5 @@
 *~
+.DS_Store
 /bin/
 /doc/
-/tst/test-suite/
+/tst/suite/

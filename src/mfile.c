@@ -1,8 +1,3 @@
-/**
- * @file mfile.c
- * @brief In memory file
- * @details
- */
 
 
 #include "mfile.h"
@@ -44,7 +39,7 @@ const struct mfile map_file(const char *pathname) {
   LOG_DEBUG("file %s mapped in %p (size %zd)", pathname, file_ptr, file_size);
   const struct mfile res = {
     .pathname       = pathname,
-    .ptr            = file_ptr,
+    .data           = file_ptr,
     .file_size      = file_size,
     .allocated_size = mult_size,
   };
@@ -54,7 +49,7 @@ const struct mfile map_file(const char *pathname) {
 
 
 void unmap_file(const struct mfile *file) {
-  if (munmap(file->ptr, file->allocated_size) != 0) {
+  if (munmap(file->data, file->allocated_size) != 0) {
     LOG_ERROR("Can't munmap the file: %s (allocated size %zd)", file->pathname, file->allocated_size);
   }
 }
@@ -62,12 +57,13 @@ void unmap_file(const struct mfile *file) {
 
 
 int mfile_is_png(const struct mfile *file) {
-
+  assert(file->file_size > 8);
+  
   const int n = 8;
   uint8_t sig[] = {137, 80, 78, 71, 13, 10, 26, 10};
 
   for (int i = 0; i < n; i++) {
-    if (sig[i] != (file->ptr)[i]) {
+    if (sig[i] != ((uint8_t*) file->data)[i]) {
       LOG_WARN("file %s failed PNG signature", file->pathname);
       return 0;
     }

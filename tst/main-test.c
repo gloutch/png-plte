@@ -1,9 +1,8 @@
 /**
- * @file test.c
+ * @file main-test.c
  * @brief The main test
  * @details
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +10,8 @@
 
 #include "log.h"
 #include "test-mfile.h"
-
+#include "test-crc.h"
+#include "test-chunk.h"
 
 
 CU_pSuite add_suite(const char* strName, CU_InitializeFunc pInit, CU_CleanupFunc pClean) {
@@ -44,8 +44,15 @@ int main() {
    CU_pSuite pSuite1 = add_suite("mfile", init_test_mfile, clean_test_mfile);
    add_test(pSuite1, "check mfile_is_png success", check_png_mfile);
    add_test(pSuite1, "check mfile_is_png failed", check_none_png_mfile);
-   
 
+   CU_pSuite pSuite2 = add_suite("CRC", init_test_crc, clean_test_crc);
+   add_test(pSuite2, "compute a CRC once", compute_crc);
+   
+   CU_pSuite pSuite3 = add_suite("Chunk", init_test_chunk, clean_test_chunk);
+   add_test(pSuite3, "converting chunk type to enum", chunk_type_enum_convertion);
+   add_test(pSuite3, "Chunk from file content", get_chunk_from_ptr);
+   add_test(pSuite3, "Header from file content", get_header_from_ptr);
+   
    /* Run all tests using the CUnit Basic interface */
    CU_basic_run_tests();
    CU_cleanup_registry();

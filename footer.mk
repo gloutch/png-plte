@@ -23,7 +23,7 @@ cov:
 	@echo "make test"
 	@$(MAKE) test CFLAGS="$(CFLAGS) $(COV)" > /dev/null
 	@echo
-	@cd $(TST_DIR) && gcov ../$(BIN_DIR)*.gcno --no-output
+	@cd $(TST_DIR) && gcov ../bin/*.gcno --no-output
 
 help:
 	@echo "make        : compile only sources ($(TARGET))"

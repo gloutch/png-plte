@@ -37,13 +37,13 @@ Here are the basic guidelines I had:
 - Makefile constantes in `header.mk` (included in other makefiles)
 - Global targets in `footer.mk` (included in other makefiles as well)
 
-Run `make help` to have targets description (it's pretty simple though and they are in the above section) 
+Run `make help` to have target descriptions (it's pretty simple though and they are in the above section) 
 
 Notes:
-- The first `make test` downloads the folder `tst/test-suite/` which is a set of PNG image I'm using for test only
-- Disable log with `LOG=NONE`, but you have a whole collection of log level in `src/log.h`
+- The first `make test` downloads the folder `tst/suite/` which is a [test-suite for PNG](http://www.schaik.com/pngsuite/) for test only
 - `make cov` is really simple but if needed I run `cd bin/ && gcov *.gcno` to see unexecuted lines in the corresponding `.c.gcov` file
-
+- Disable log with `LOG=NONE`, but you have a whole collection of log level in `src/log.h`
+- Take care to compile with `LOG=ALL` in order to try the compiler against every lines of code
 
 
 ## Documentation
@@ -52,7 +52,7 @@ As I tend to leave a project for several months straight,
 I tough it would be nice to write some documentation using [Doxygen](https://www.doxygen.nl/manual/commands.html)
 to easily come back each time.
 
-At least, each file begins with
+At least, each header file begins with
 ```
 /**
  * @file
@@ -60,7 +60,7 @@ At least, each file begins with
  * @details
  */
 ```
-And each function must be well described with
+And each function must be well described in it
 ```
 /**
  * @brief
@@ -68,3 +68,4 @@ And each function must be well described with
  * @return
  */
 ```
+Otherwise `make doc` prints warning about not documented content
