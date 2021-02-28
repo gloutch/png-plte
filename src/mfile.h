@@ -28,7 +28,7 @@ struct mfile {
   /** @brief Pointer to the beginning of the mapped file */
   void *data;
   /** @brief File size */
-  size_t file_size;
+  size_t size;
   /** @brief Allocated size */
   size_t allocated_size;
 };

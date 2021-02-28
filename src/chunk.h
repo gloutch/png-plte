@@ -1,6 +1,6 @@
 /**
  * @file chunk.h
- * @brief 
+ * @brief Functions to extract chunk
  * @details
  */
 
@@ -18,7 +18,7 @@
 
 
 
-// chunk type
+// generic chunk layout
 
 /**
  * @brief Chunk type enumerate
@@ -66,15 +66,11 @@ enum chunk_type {
 };
 
 /**
- * @brief Convert type value from png to enumerate value
- * @param[in] type Deserialized chunk type value
- * @return The corresponding enum value or UNKN
+ * @brief Convert enum chunk_type to chunk type value
+ * @param[in] type (!= UKWN)
+ * @return Type value
  */
-enum chunk_type chunk_type_value_to_enum(uint32_t type);
-
-
-
-// generic chunk layout
+uint32_t enum_to_type_value(enum chunk_type type);
 
 /**
  * @brief Generic [chunk layout](http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html#Chunk-layout)
@@ -115,7 +111,7 @@ enum color_type {
   /** @brief Grayscale + alpha */
   GRAYSCALE_ALPHA = 4,
   /** @brief RGB triple + alpha */
-  RBG_TRIPLE_ALPHA = 6,
+  RGB_TRIPLE_ALPHA = 6,
 };
 
 /**
@@ -146,6 +142,20 @@ struct IHDR {
  */
 const struct IHDR IHDR_chunk(const struct chunk *chunk);
 
+
+
+// chunk time
+
+struct TIME {
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second;
+};
+
+const struct TIME TIME_chunk(const struct chunk *chunk);
 
 
 

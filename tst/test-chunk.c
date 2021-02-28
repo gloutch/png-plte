@@ -15,25 +15,10 @@ int clean_test_chunk(void) {
 
 
 
-void chunk_type_enum_convertion(void) {
-
-  const char *IHDR_string = "IHDR";
-  uint32_t header_type_value = *(uint32_t *) IHDR_string;
-  CU_ASSERT_EQUAL(IHDR, chunk_type_value_to_enum(header_type_value));
-
-  const char *sRGB_string = "sRGB";
-  uint32_t srgb_type_value = *(uint32_t *) sRGB_string;
-  CU_ASSERT_EQUAL(SRGB, chunk_type_value_to_enum(srgb_type_value));
-
-  uint32_t unknown = 0x01010101;
-  CU_ASSERT_EQUAL(UKWN, chunk_type_value_to_enum(unknown));
-}
-
-
 void get_chunk_from_ptr(void) {
 
   const struct mfile file = map_file("suite/basi0g01.png");
-  const struct chunk header = get_chunk(file.file_size - 8, ((uint8_t * )file.data) + 8);
+  const struct chunk header = get_chunk(file.size - 8, ((uint8_t * )file.data) + 8);
   
   CU_ASSERT_EQUAL(header.length, 13);
   CU_ASSERT_EQUAL(header.type, IHDR);
@@ -47,7 +32,7 @@ void get_chunk_from_ptr(void) {
 void get_header_from_ptr(void) {
 
   const struct mfile file = map_file("suite/basn0g01.png"); // no interlace
-  const struct chunk chunk = get_chunk(file.file_size - 8, ((uint8_t * )file.data) + 8);
+  const struct chunk chunk = get_chunk(file.size - 8, ((uint8_t * )file.data) + 8);
   CU_ASSERT_EQUAL(chunk.type, IHDR);
   const struct IHDR header = IHDR_chunk(&chunk);
 

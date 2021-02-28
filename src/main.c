@@ -8,8 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "chunk.h"
 #include "log.h"
 #include "mfile.h"
+#include "print.h"
 
 
 /**
@@ -29,6 +31,7 @@ void usage(int argc, char *argv[]) {
  */
 int main(int argc, char *argv[]) {
   LOG_LOG_LEVEL();
+  /* print_version(); */
 
   if (argc < 2) {
     usage(argc, argv);
@@ -42,6 +45,8 @@ int main(int argc, char *argv[]) {
     unmap_file(&file);
     exit(1);
   }
+
+  print_PNG_file(&file);  
 
   unmap_file(&file);
   return 0;

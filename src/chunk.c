@@ -19,9 +19,12 @@ static const char * const public_type_value[NB_PUBLIC_CHUNK] = {
   "tEXt", "zTXt", "iTXt", "bKGD", "pHYs", "sBIT", "sPLT", "hIST", "tIME"
 };
 
-
-
-enum chunk_type chunk_type_value_to_enum(uint32_t type) {
+/**
+ * @brief Convert type value from png to enumerate value
+ * @param[in] type Deserialized chunk type value
+ * @return The corresponding enum value or UNKN
+ */
+static enum chunk_type chunk_type_value_to_enum(uint32_t type) {
   LOG_DEBUG("Converion type '%.4s' to enum", (char *) &type);
 
   for (int i = 0; i < NB_PUBLIC_CHUNK; i++) {
@@ -33,13 +36,7 @@ enum chunk_type chunk_type_value_to_enum(uint32_t type) {
   return UKWN;
 }
 
-
-/**
- * @brief Convert enum chunk_type to chunt type value
- * @param[in] type (!= UKWN)
- * @return Type value
- */
-static uint32_t enum_to_chunk_type_value(enum chunk_type type) {
+uint32_t enum_to_type_value(enum chunk_type type) {
   assert(type != UKWN);
   return UINT32_FROM_PTR(public_type_value[type - 1]);
 }
@@ -101,10 +98,6 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk) {
   // TODO: check values
   assert(res.compression == 0);
   assert(res.filter == 0);
-  if (res.interlace != 0) {
-    LOG_FATAL("Sorry, interlace methode not handled yet: %d", res.interlace);
-    exit(1);
-  }
 
   LOG_INFO("[%d,%d]  depth %d  color-type %d  compressoin %d  filter %d  interlace %d",
            res.width, res.height, res.depth, res.color_type, res.compression, res.filter, res.interlace);
@@ -113,3 +106,18 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk) {
 
 
 
+const struct TIME TIME_chunk(const struct chunk *chunk) {
+  assert(chunk->type == TIME);
+  assert(chunk->length == 7);
+
+  const uint8_t *ptr = chunk->data;
+  const struct TIME res = {
+    .year   = ntohs(UINT16_FROM_PTR(ptr)),
+    .month  = UINT8_FROM_PTR(ptr + 2),
+    .day    = UINT8_FROM_PTR(ptr + 3),
+    .hour   = UINT8_FROM_PTR(ptr + 4),
+    .minute = UINT8_FROM_PTR(ptr + 5),
+    .second = UINT8_FROM_PTR(ptr + 6),
+  };
+  return res;
+}

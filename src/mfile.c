@@ -40,7 +40,7 @@ const struct mfile map_file(const char *pathname) {
   const struct mfile res = {
     .pathname       = pathname,
     .data           = file_ptr,
-    .file_size      = file_size,
+    .size           = file_size,
     .allocated_size = mult_size,
   };
   return res;
@@ -57,10 +57,12 @@ void unmap_file(const struct mfile *file) {
 
 
 int mfile_is_png(const struct mfile *file) {
-  assert(file->file_size > 8);
-  
   const int n = 8;
   uint8_t sig[] = {137, 80, 78, 71, 13, 10, 26, 10};
+  
+  if (file->size < n) {
+    return 0;
+  }
 
   for (int i = 0; i < n; i++) {
     if (sig[i] != ((uint8_t*) file->data)[i]) {

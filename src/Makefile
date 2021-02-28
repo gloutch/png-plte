@@ -10,7 +10,7 @@ OBJECTS = $(addprefix $(BIN_DIR), $(SOURCES:.c=.o))
 .PHONY: all
 
 all: main.c $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(TARGET)
+	$(CC) $(CFLAGS) $(ZLIB) $(OBJECTS) -o $(TARGET)
 
 $(OBJECTS): $(BIN_DIR)%.o : $(SRC_DIR)%.c
 	@mkdir -p $(BIN_DIR)
