@@ -13,7 +13,11 @@ int clean_test_chunk(void);
 
 void get_chunk_from_ptr(void);
 
-void get_header_from_ptr(void);
+void test_header(void);
+
+void test_time(void);
+
+void test_gamma(void);
 
 
 #endif // __TEST_CHUNK_H__

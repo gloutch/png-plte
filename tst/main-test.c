@@ -50,7 +50,9 @@ int main() {
    
    CU_pSuite pSuite3 = add_suite("Chunk", init_test_chunk, clean_test_chunk);
    add_test(pSuite3, "Chunk from file content", get_chunk_from_ptr);
-   add_test(pSuite3, "Header from file content", get_header_from_ptr);
+   add_test(pSuite3, "Header chunk", test_header);
+   add_test(pSuite3, "Time chunk", test_time);
+   add_test(pSuite3, "Gamma chunk", test_gamma);
    
    /* Run all tests using the CUnit Basic interface */
    CU_basic_run_tests();

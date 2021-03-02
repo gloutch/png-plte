@@ -76,16 +76,21 @@ void print_chunk(const struct chunk *chunk) {
   uint32_t chunk_size = chunk->length + 12;
 
   if (chunk->type == UKWN) {
-    printf("ukwn %-6d ", chunk_size);
+    printf("ukwn %-6d  ", chunk_size);
   }
   else {
     uint32_t type_value = enum_to_type_value(chunk->type);
-    printf("%.4s %-6d ", (char *) &(type_value), chunk_size);
+    printf("%.4s %-6d  ", (char *) &(type_value), chunk_size);
 
     switch (chunk->type) {
     case IHDR: {
       const struct IHDR t = IHDR_chunk(chunk);
       print_IHDR_chunk(&t);
+      break;
+    }
+    case GAMA: {
+      uint32_t gamma = GAMA_chunk(chunk);
+      printf("gamma %d/100000", gamma);
       break;
     }
     case TIME: {
@@ -115,7 +120,7 @@ void print_PNG_file(const struct mfile *file) {
   uint8_t *cursor = file->data;
 
   // print the 8-byte signature
-  printf("SIG  8      ");
+  printf("SIG  8       ");
   for (int i = 0; i < 8; i++) {
     printf("%02X ", cursor[i]);
   }

@@ -144,17 +144,42 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk);
 
 
 
+// chunk gamma
+
+/**
+ * @brief Get Gamma value
+ * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.gAMA)
+ */
+uint32_t GAMA_chunk(const struct chunk *chunk);
+
+
+
 // chunk time
 
+/**
+ * @brief Time chunk gives the time of the last modification
+ * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.tIME)
+ */
 struct TIME {
+  /** @brief Year */
   uint16_t year;
+  /** @brief Month */
   uint8_t month;
+  /** @brief Day */
   uint8_t day;
+  /** @brief Hour */
   uint8_t hour;
+  /** @brief Minute */
   uint8_t minute;
+  /** @brief Second */
   uint8_t second;
 };
 
+/**
+ * @brief Get the time chunk
+ * @param[in] chunk
+ * @return Time chunk
+ */
 const struct TIME TIME_chunk(const struct chunk *chunk);
 
 

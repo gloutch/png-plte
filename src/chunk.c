@@ -25,10 +25,10 @@ static const char * const public_type_value[NB_PUBLIC_CHUNK] = {
  * @return The corresponding enum value or UNKN
  */
 static enum chunk_type chunk_type_value_to_enum(uint32_t type) {
-  LOG_DEBUG("Converion type '%.4s' to enum", (char *) &type);
 
   for (int i = 0; i < NB_PUBLIC_CHUNK; i++) {
     if (type == UINT32_FROM_PTR(public_type_value[i])) {
+      LOG_TRACE("Converion type '%.4s' to enum %d", (char *) &type, i + 1);
       return i + 1;
     }
   }
@@ -40,6 +40,7 @@ uint32_t enum_to_type_value(enum chunk_type type) {
   assert(type != UKWN);
   return UINT32_FROM_PTR(public_type_value[type - 1]);
 }
+
 
 
 
@@ -80,6 +81,7 @@ const struct chunk get_chunk(size_t size, const void *data) {
 
 
 
+
 const struct IHDR IHDR_chunk(const struct chunk *chunk) {
   assert(chunk->type == IHDR);
   assert(chunk->length == 13);
@@ -103,6 +105,16 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk) {
            res.width, res.height, res.depth, res.color_type, res.compression, res.filter, res.interlace);
   return res;
 }
+
+
+
+uint32_t GAMA_chunk(const struct chunk *chunk) {
+  assert(chunk->type == GAMA);
+  assert(chunk->length == 4);
+  
+  return ntohl(UINT32_FROM_PTR(chunk->data));
+}
+
 
 
 
