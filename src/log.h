@@ -33,7 +33,7 @@
 
 /** @brief default log level */
 #ifndef LOG_LEVEL
-  #define LOG_LEVEL INFO
+  #define LOG_LEVEL NONE
 #endif
 
 /** @brief prefix format for one liner log */

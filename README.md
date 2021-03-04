@@ -8,7 +8,7 @@ Play with [PNG format](http://www.libpng.org/pub/png/spec/1.2/PNG-Contents.html)
 
 The only dependency is [zlib](https://github.com/madler/zlib), feel free to change **ZLIB=-lz** in `header.mk` to link correclty
 
-Then **make LOG=NONE** to compile only sources and have fun with `./bin/png-plte`
+Then **make** to compile only sources and have fun with `./bin/png-plte`
 
 
 

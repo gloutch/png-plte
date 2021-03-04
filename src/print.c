@@ -62,16 +62,46 @@ static void print_IHDR_chunk(const struct IHDR *chunk) {
   }
 }
 
+static void print_BKGD_chunk(const struct BKGD *chunk) {
+  switch (chunk->color_type) {
+  case PLTE_INDEX: {
+    printf("index %d", chunk->color.index);
+    return;
+  }
+  case GRAYSCALE:
+  case GRAYSCALE_ALPHA: {
+    printf("gray: %d", chunk->color.gray);
+    return;
+  }
+  case RGB_TRIPLE:
+  case RGB_TRIPLE_ALPHA: {
+    printf("red %d   green %d   blue %d", chunk->color.rgb.red, chunk->color.rgb.green, chunk->color.rgb.blue);
+  }
+  }
+}
 
+static void print_PHYS_chunk(const struct PHYS *chunk) {
+  printf("X:%d  Y:%d  unit:%d ", chunk->x_axis, chunk->y_axis, chunk->unit);
+  switch (chunk->unit) {
+  case 0:
+    printf("(ratio)");
+    break;
+  case 1:
+    printf("(meter)");
+    break;
+  default:
+    printf("(UNKNOWN)");
+  }
+}
 
-static void print_TIME_chunk(const struct TIME *chk) {
-  printf("%d/%02d/%02d ", chk->day, chk->month, chk->year);
-  printf("%02d:%02d:%02d", chk->hour, chk->minute, chk->second);
+static void print_TIME_chunk(const struct TIME *chunk) {
+  printf("%d/%02d/%02d ", chunk->day, chunk->month, chunk->year);
+  printf("%02d:%02d:%02d", chunk->hour, chunk->minute, chunk->second);
 }
 
 
 
-void print_chunk(const struct chunk *chunk) {
+void print_chunk(const struct chunk *chunk, const struct IHDR *header) {
 
   uint32_t chunk_size = chunk->length + 12;
 
@@ -91,6 +121,16 @@ void print_chunk(const struct chunk *chunk) {
     case GAMA: {
       uint32_t gamma = GAMA_chunk(chunk);
       printf("gamma %d/100000", gamma);
+      break;
+    }
+    case BKGD: {
+      const struct BKGD t = BKGD_chunk(chunk, header);
+      print_BKGD_chunk(&t);
+      break;
+    }
+    case PHYS: {
+      const struct PHYS t = PHYS_chunk(chunk);
+      print_PHYS_chunk(&t);
       break;
     }
     case TIME: {
@@ -131,12 +171,15 @@ void print_PNG_file(const struct mfile *file) {
   cursor = file->data + (file->size - remainder);
   struct chunk current = get_chunk(remainder, cursor);
 
+  assert(current.type == IHDR); // first chunk is the header
+  const struct IHDR header = IHDR_chunk(&current);
+  
   while (current.type != IEND) {
-    print_chunk(&current);
+    print_chunk(&current, &header);
     
     remainder -= current.length + 12; // size of the chunk
     cursor = file->data + (file->size - remainder);
     current = get_chunk(remainder, cursor);
   }
-  print_chunk(&current);
+  print_chunk(&current, NULL);
 }

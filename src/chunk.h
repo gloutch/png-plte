@@ -22,7 +22,7 @@
 
 /**
  * @brief Chunk type enumerate
- * @details I prefer enumerate value at least for switch cases 
+ * @details I prefer enumerate value, at least for switch cases 
  */
 enum chunk_type {
   /** @brief Type 0 is unknown chunk type */
@@ -138,7 +138,7 @@ struct IHDR {
 /**
  * @brief Get the header from a chunk
  * @param[in] chunk
- * @return Header chunk
+ * @return IHDR chunk
  */
 const struct IHDR IHDR_chunk(const struct chunk *chunk);
 
@@ -148,9 +148,72 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk);
 
 /**
  * @brief Get Gamma value
+ * @param[in] chunk
  * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.gAMA)
+ * @return GAMA chunk
  */
 uint32_t GAMA_chunk(const struct chunk *chunk);
+
+
+
+// chunk background
+
+/**
+ * @brief Background color
+ * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.bKGD)
+ */
+struct BKGD {
+  /** @brief Color type from the header chunk (needed to guess the background format) */
+  enum color_type color_type;
+  /** @brief Union of format for colors */
+  union {
+    /** @brief Index of the color in PLTE */
+    uint8_t index;
+    /** @brief Single gray color */
+    uint16_t gray;
+    /** @brief RGB value */
+    struct {
+      /** @brief Red value */
+      uint16_t red;
+      /** @brief Green value */
+      uint16_t green;
+      /** @brief Blue value */
+      uint16_t blue;
+    } rgb;
+  } color;
+};
+
+/**
+ * @brief Get the background chunk
+ * @param[in] chunk
+ * @param[in] header The IHDR chunk (needed for color type and depth)
+ * @return BKGD chunk
+ */
+const struct BKGD BKGD_chunk(const struct chunk *chunk, const struct IHDR *header);
+
+
+
+// chunk phys
+
+/**
+ * @brief Physical pixel dimension
+ * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.pHYs)
+ */
+struct PHYS {
+  /** @brief Pixel per unit, X axis */
+  uint32_t x_axis;
+  /** @brief Pixel per unit, Y axis */
+  uint32_t y_axis;
+  /** @brief Unit specifier */
+  uint8_t unit;
+};
+
+/**
+ * @brief Get the physical chunk
+ * @param[in] chunk
+ * @return PHYS chunk
+ */
+const struct PHYS PHYS_chunk(const struct chunk *chunk);
 
 
 
@@ -161,26 +224,27 @@ uint32_t GAMA_chunk(const struct chunk *chunk);
  * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.tIME)
  */
 struct TIME {
-  /** @brief Year */
+  /** @brief Year of the last modification */
   uint16_t year;
-  /** @brief Month */
+  /** @brief Month of the last modification */
   uint8_t month;
-  /** @brief Day */
+  /** @brief Day of the last modification */
   uint8_t day;
-  /** @brief Hour */
+  /** @brief Hour of the last modification */
   uint8_t hour;
-  /** @brief Minute */
+  /** @brief Minute of the last modification */
   uint8_t minute;
-  /** @brief Second */
+  /** @brief Second of the last modification */
   uint8_t second;
 };
 
 /**
  * @brief Get the time chunk
  * @param[in] chunk
- * @return Time chunk
+ * @return TIME chunk
  */
 const struct TIME TIME_chunk(const struct chunk *chunk);
+
 
 
 

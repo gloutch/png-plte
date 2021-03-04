@@ -7,6 +7,7 @@
 #define  UINT8_FROM_PTR(ptr)  (*((uint8_t *) (ptr)))
 
 
+
 /** @brief Number of public chunk */
 #define NB_PUBLIC_CHUNK (18)
 
@@ -115,6 +116,56 @@ uint32_t GAMA_chunk(const struct chunk *chunk) {
   return ntohl(UINT32_FROM_PTR(chunk->data));
 }
 
+
+
+const struct BKGD BKGD_chunk(const struct chunk *chunk, const struct IHDR *header) {
+  assert(chunk->type == BKGD);
+  
+  struct BKGD bg;
+  bg.color_type = header->color_type;
+  const uint8_t *ptr = chunk->data;
+  
+  switch (header->color_type) {
+  case PLTE_INDEX: {
+    
+    assert(chunk->length == 1);
+    bg.color.index = UINT8_FROM_PTR(ptr);
+    return bg;
+  }
+  case GRAYSCALE:
+  case GRAYSCALE_ALPHA: {
+    
+    assert(chunk->length == 2);
+    bg.color.gray = ntohs(UINT16_FROM_PTR(ptr));
+    return bg;
+  }
+  case RGB_TRIPLE:
+  case RGB_TRIPLE_ALPHA: {
+    
+    assert(chunk->length == 6);
+    bg.color.rgb.red   = ntohs(UINT16_FROM_PTR(ptr));
+    bg.color.rgb.green = ntohs(UINT16_FROM_PTR(ptr + 2));
+    bg.color.rgb.blue  = ntohs(UINT16_FROM_PTR(ptr + 4));
+    return bg;
+  }
+  }
+  assert(0);
+}
+
+
+
+const struct PHYS PHYS_chunk(const struct chunk *chunk) {
+  assert(chunk->type == PHYS);
+  assert(chunk->length == 9);
+
+  const uint8_t *ptr = chunk->data;
+  const struct PHYS res = {
+    .x_axis = ntohl(UINT32_FROM_PTR(ptr)),
+    .y_axis = ntohl(UINT32_FROM_PTR(ptr + 4)),
+    .unit   = UINT8_FROM_PTR(ptr + 8),
+  };
+  return res;
+}
 
 
 
