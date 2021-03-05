@@ -19,5 +19,9 @@ void test_time(void);
 
 void test_gamma(void);
 
+void test_physic(void);
+
+void test_bkgd(void);
+
 
 #endif // __TEST_CHUNK_H__

@@ -53,6 +53,9 @@ int main() {
    add_test(pSuite3, "Header chunk", test_header);
    add_test(pSuite3, "Time chunk", test_time);
    add_test(pSuite3, "Gamma chunk", test_gamma);
+   add_test(pSuite3, "Physical size chunk", test_physic);
+   add_test(pSuite3, "Background chunk", test_bkgd);
+   
    
    /* Run all tests using the CUnit Basic interface */
    CU_basic_run_tests();
