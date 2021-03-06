@@ -173,3 +173,26 @@ void test_bkgd(void) {
   CU_ASSERT_EQUAL(bkgd3.color.gray, 0);
   unmap_file(&file3);
 }
+
+
+void test_plte(void) {
+
+  const struct mfile file1 = map_file("suite/tbbn3p08.png");
+  const struct IHDR header1 = get_header(&file1);
+  const struct chunk chunk1 = get_chunk(file1.size - 49, ((uint8_t *)file1.data) + 49);
+  CU_ASSERT_EQUAL(chunk1.type, PLTE);
+  const struct PLTE plte1 = PLTE_chunk(&chunk1, &header1);
+
+  CU_ASSERT_EQUAL(plte1.nb_color, 246);
+  unmap_file(&file1);
+
+
+  const struct mfile file2 = map_file("suite/basn3p08.png");
+  const struct IHDR header2 = get_header(&file2);
+  const struct chunk chunk2 = get_chunk(file2.size - 49, ((uint8_t *)file2.data) + 49);
+  CU_ASSERT_EQUAL(chunk2.type, PLTE);
+  const struct PLTE plte2 = PLTE_chunk(&chunk2, &header2);
+
+  CU_ASSERT_EQUAL(plte2.nb_color, 256);
+  unmap_file(&file2);
+}

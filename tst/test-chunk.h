@@ -23,5 +23,7 @@ void test_physic(void);
 
 void test_bkgd(void);
 
+void test_plte(void);
+
 
 #endif // __TEST_CHUNK_H__

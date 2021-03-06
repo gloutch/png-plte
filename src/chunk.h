@@ -144,6 +144,29 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk);
 
 
 
+// chunk palette
+
+/**
+ * @brief Palette chunk
+ * @details [Source](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.PLTE)
+ */
+struct PLTE {
+  /** @brief Number of color on the palette (1 to 256) */
+  uint16_t nb_color;
+  /** @brief Pointer to the first color RGB on 1 byte each */
+  const uint8_t *color;
+};
+
+/**
+ * @brief Get the PLTE chunk
+ * @param[in] chunk
+ * @param[in] header Needed to check palette size
+ * @return PLTE chunk
+ */
+const struct PLTE PLTE_chunk(const struct chunk *chunk, const struct IHDR *header);
+
+
+
 // chunk gamma
 
 /**

@@ -10,7 +10,7 @@ void print_version(void) {
 
 
 
-static void print_IHDR_chunk(const struct IHDR *chunk) {
+static void print_IHDR(const struct IHDR *chunk) {
 
   printf("[%d,%d]   ", chunk->width, chunk->height);
   printf("depth %d   ", chunk->depth);
@@ -23,7 +23,7 @@ static void print_IHDR_chunk(const struct IHDR *chunk) {
     printf("RGB");
     break;
   case PLTE_INDEX:
-    printf("RGB+palette");
+    printf("RGB palette");
     break;
   case GRAYSCALE_ALPHA:
     printf("gray+alpha");
@@ -62,7 +62,11 @@ static void print_IHDR_chunk(const struct IHDR *chunk) {
   }
 }
 
-static void print_BKGD_chunk(const struct BKGD *chunk) {
+static void print_PLTE(const struct PLTE *chunk) {
+  printf("%d colors", chunk->nb_color);
+}
+
+static void print_BKGD(const struct BKGD *chunk) {
   switch (chunk->color_type) {
   case PLTE_INDEX: {
     printf("index %d", chunk->color.index);
@@ -80,7 +84,7 @@ static void print_BKGD_chunk(const struct BKGD *chunk) {
   }
 }
 
-static void print_PHYS_chunk(const struct PHYS *chunk) {
+static void print_PHYS(const struct PHYS *chunk) {
   printf("X:%d  Y:%d  unit:%d ", chunk->x_axis, chunk->y_axis, chunk->unit);
   switch (chunk->unit) {
   case 0:
@@ -94,7 +98,7 @@ static void print_PHYS_chunk(const struct PHYS *chunk) {
   }
 }
 
-static void print_TIME_chunk(const struct TIME *chunk) {
+static void print_TIME(const struct TIME *chunk) {
   printf("%d/%02d/%02d ", chunk->day, chunk->month, chunk->year);
   printf("%02d:%02d:%02d", chunk->hour, chunk->minute, chunk->second);
 }
@@ -115,7 +119,12 @@ void print_chunk(const struct chunk *chunk, const struct IHDR *header) {
     switch (chunk->type) {
     case IHDR: {
       const struct IHDR t = IHDR_chunk(chunk);
-      print_IHDR_chunk(&t);
+      print_IHDR(&t);
+      break;
+    }
+    case PLTE: {
+      const struct PLTE t = PLTE_chunk(chunk, header);
+      print_PLTE(&t);
       break;
     }
     case GAMA: {
@@ -125,17 +134,17 @@ void print_chunk(const struct chunk *chunk, const struct IHDR *header) {
     }
     case BKGD: {
       const struct BKGD t = BKGD_chunk(chunk, header);
-      print_BKGD_chunk(&t);
+      print_BKGD(&t);
       break;
     }
     case PHYS: {
       const struct PHYS t = PHYS_chunk(chunk);
-      print_PHYS_chunk(&t);
+      print_PHYS(&t);
       break;
     }
     case TIME: {
       const struct TIME t = TIME_chunk(chunk);
-      print_TIME_chunk(&t);
+      print_TIME(&t);
       break;
     }
     default:; // nothing for now

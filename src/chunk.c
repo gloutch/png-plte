@@ -47,7 +47,7 @@ uint32_t enum_to_type_value(enum chunk_type type) {
 
 const struct chunk get_chunk(size_t size, const void *data) {
   if (size < 12) {
-    LOG_FATAL("Data too small to get a chunk: size %zu", size);
+    LOG_FATAL("Remaind file too short to get a chunk: size %zu", size);
     exit(1);
   }
  
@@ -57,10 +57,9 @@ const struct chunk get_chunk(size_t size, const void *data) {
   uint32_t data_length = ntohl(UINT32_FROM_PTR(ptr));
   
   if (size < (8 + data_length + 4)) {
-    LOG_FATAL("Data too small (%zu) for the expected data length: %d", size, data_length);
+    LOG_FATAL("Remaind file too short (%zu) for the expected data length: %d", size, data_length);
     exit(1);
   }
-
   
   uint32_t expected_crc = ntohl(UINT32_FROM_PTR(ptr + 8 + data_length));
   uint32_t computed_crc = crc((unsigned char *) ptr + 4, 4 + data_length);
@@ -102,8 +101,35 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk) {
   assert(res.compression == 0);
   assert(res.filter == 0);
 
-  LOG_INFO("[%d,%d]  depth %d  color-type %d  compressoin %d  filter %d  interlace %d",
+  LOG_INFO("[%d,%d]  depth %d  color-type %d  compression %d  filter %d  interlace %d",
            res.width, res.height, res.depth, res.color_type, res.compression, res.filter, res.interlace);
+  return res;
+}
+
+
+
+const struct PLTE PLTE_chunk(const struct chunk *chunk, const struct IHDR *header) {
+  assert(chunk->type == PLTE);
+
+  if ((chunk->length % 3) != 0) {
+    LOG_FATAL("Wrong palette size: %d (not divisible by 3)", chunk->length);
+    exit(1);
+  }
+  LOG_DEBUG("Pixel sample depth: %d (among 1,2,4,8)", header->depth);
+
+  // compute number of color index
+  uint16_t max_color = ((uint16_t) 1) << header->depth;
+  uint32_t nb_color  = chunk->length / 3;
+
+  if (nb_color > max_color) {
+    LOG_WARN("Too much color (%d) compared to index range [0-%d] (depth %d)", nb_color, max_color - 1, header->depth); 
+  }
+  LOG_DEBUG("Palette index [0-%d]", nb_color - 1); 
+  
+  const struct PLTE res = {
+    .nb_color = nb_color,
+    .color    = chunk->data,
+  };
   return res;
 }
 
@@ -112,7 +138,6 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk) {
 uint32_t GAMA_chunk(const struct chunk *chunk) {
   assert(chunk->type == GAMA);
   assert(chunk->length == 4);
-  
   return ntohl(UINT32_FROM_PTR(chunk->data));
 }
 
