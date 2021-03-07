@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 
   // print_PNG_file(&file);
 
-  const struct image image = image_from_file(&file);
+  const struct image image = image_from_png(&file);
 
   view_image(&image);
   

@@ -57,8 +57,6 @@ int main() {
    add_test(pSuite3, "Palette chunk", test_plte);
 
    CU_pSuite pSuite4 = add_suite("Image", init_test_image, clean_test_image);
-   add_test(pSuite4, "bit per pixel", test_bit_per_pixel);
-   add_test(pSuite4, "byte per scanline", test_byte_per_line);
    add_test(pSuite4, "Image from file", test_get_image);
    
    

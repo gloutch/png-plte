@@ -1,27 +1,37 @@
 
 #include "image.h"
+#include "chunk.h"
 
 
-
-uint8_t bit_per_pixel(uint8_t depth, enum color_type type) {
+/**
+ * @brief Number of sample of a pixel 
+ * @param[in] type Color type
+ * @return Count of sample
+ */
+static uint8_t count_sample(enum color_type type) {
   switch (type) {
   case PLTE_INDEX:
   case GRAYSCALE:
-    return depth;
+    return 1;
   case GRAYSCALE_ALPHA:
-    return depth * 2;
+    return 2;
   case RGB_TRIPLE:
-    return depth * 3;
+    return 3;
   case RGB_TRIPLE_ALPHA:
-    return depth * 4;
+    return 4;
   }
 }
 
-
-
-uint32_t byte_per_line(uint8_t depth, enum color_type type, uint32_t width) {
+/**
+ * @brief Compute the length of a scanline
+ * @param[in] depth
+ * @param[in] sample Count of sample
+ * @param[in] width
+ * @return Number of byte for a pixel (or index) line in the image
+ */
+static uint32_t byte_per_line(uint8_t depth, uint8_t sample, uint32_t width) {
   
-  uint32_t bit_per_line = bit_per_pixel(depth, type) * width;
+  uint32_t bit_per_line = depth * sample * width;
 
   if (bit_per_line % 8 == 0) {
     // no bit wasted
@@ -32,20 +42,15 @@ uint32_t byte_per_line(uint8_t depth, enum color_type type, uint32_t width) {
   return (bit_per_line / 8) + 1;
 }
 
-
-
 /**
  * @brief Compute the needed size for the decompression of IDAt chunk
- * @details Add one [filter-type](http://www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html#DR.Filtering)
- * byte to each scanline to get the total size
- * @param[in] depth
- * @param[in] type
- * @param[in] width
- * @param[in] height
+ * @details Add one [filter-type byte](http://www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html#DR.Filtering)
+ * to each scanline to get the total size
+ * @param[in] header
  * @return size
  */
-static uint32_t unpack_size(uint8_t depth, enum color_type type, uint32_t width, uint32_t height) {
-  return (1 + byte_per_line(depth, type, width)) * height;
+static uint32_t unpack_size(const struct IHDR *header) {
+  return (1 + byte_per_line(header->depth, count_sample(header->color_type), header->width)) * header->height;
 }
 
 /**
@@ -128,7 +133,7 @@ static void unpack_data(uint32_t file_size, const uint8_t *file_ptr, uint32_t im
 
 
 
-const struct image image_from_file(const struct mfile *file) {
+const struct image image_from_png(const struct mfile *file) {
   assert(mfile_is_png(file) == 1);
 
   // skip the signature and get header
@@ -149,9 +154,8 @@ const struct image image_from_file(const struct mfile *file) {
   }
 
   // compute the size of the unpack image
-  uint32_t img_size = unpack_size(header.depth, header.color_type, header.width, header.height);
-  // malloc the right size
-  void *img_data = malloc(img_size);
+  uint32_t img_size = unpack_size(&header);
+  void    *img_data = malloc(img_size);
   if (img_data == NULL) {
     LOG_FATAL("Can't allocate %d byte to get the image", img_size);
     exit(1);
@@ -167,14 +171,20 @@ const struct image image_from_file(const struct mfile *file) {
   // TODO:unfilter
 
   struct image img = {
-    .width      = header.width,
-    .height     = header.height,
-    .depth      = header.depth,
-    .color_type = header.color_type,
-    // .palette = ?
-    .data       = img_data,
+    .width   = header.width,
+    .height  = header.height,
+    .depth   = header.depth,
+    .sample  = count_sample(header.color_type),
+    .palette = NULL,
+    .data    = img_data,
   };
   return img;
+}
+
+
+
+uint32_t line_size(const struct image *image) {
+  return byte_per_line(image->depth, image->sample, image->width);
 }
 
 

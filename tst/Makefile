@@ -25,7 +25,7 @@ run-test: prepare $(TARGET_TEST)
 # assuming $(TARGET) compiles all src objects needed $(SRC_OBJECTS)
 #
 $(TARGET_TEST): $(TARGET) $(TST_OBJECTS)
-	$(CC) $(CFLAGS) $(CUNIT) $(ZLIB) -I$(SRC_DIR) $(ALL_OBJECTS) -o $(TARGET_TEST)
+	$(CC) $(CFLAGS) $(CUNIT) $(ZLIB) $(SDL) -I$(SRC_DIR) $(ALL_OBJECTS) -o $(TARGET_TEST)
 
 $(TST_OBJECTS): $(BIN_DIR)%.o : $(TST_DIR)%.c
 	$(CC) $(CFLAGS) -I$(SRC_DIR) -c $< -o $@

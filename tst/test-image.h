@@ -11,10 +11,6 @@ int clean_test_image(void);
 
 
 
-void test_bit_per_pixel(void);
-
-void test_byte_per_line(void);
-
 void test_get_image(void);
 
 
