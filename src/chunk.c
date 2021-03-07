@@ -75,7 +75,7 @@ const struct chunk get_chunk(size_t size, const void *data) {
     .data   = ptr + 8,
     .crc    = expected_crc,
   };
-  LOG_INFO("Get chunk %.4s, data %d byte, crc 0x%x", (char *) &(chunk_type), res.length, res.crc);
+  LOG_INFO("%.4s, data %-6d crc 0x%x", (char *) &(chunk_type), res.length, res.crc);
   return res;
 }
 
@@ -101,7 +101,7 @@ const struct IHDR IHDR_chunk(const struct chunk *chunk) {
   assert(res.compression == 0);
   assert(res.filter == 0);
 
-  LOG_INFO("[%d,%d]  depth %d  color-type %d  compression %d  filter %d  interlace %d",
+  LOG_DEBUG("[%d,%d]  depth %d  color-type %d  compression %d  filter %d  interlace %d",
            res.width, res.height, res.depth, res.color_type, res.compression, res.filter, res.interlace);
   return res;
 }

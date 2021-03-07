@@ -37,7 +37,7 @@
 #endif
 
 /** @brief prefix format for one liner log */
-#define LOG_PREFIX(level) (printf("%-5s : %s %d %s()     ", level, __FILE__, __LINE__, __func__))
+#define LOG_PREFIX(level) (printf("%-5s %s %d %s() \t ", level, __FILE__, __LINE__, __func__))
 
 
 /*
@@ -98,7 +98,7 @@
   #define LOG_LOG_LEVEL() puts("Log level -> DEBUG")
 
 #elif (LOG_LEVEL == INFO)
-  #define LOG_LOG_LEVEL() puts("Log level -> INFO (default)")
+  #define LOG_LOG_LEVEL() puts("Log level -> INFO")
 
 #elif (LOG_LEVEL == WARN)
   #define LOG_LOG_LEVEL() puts("Log level -> WARNING")

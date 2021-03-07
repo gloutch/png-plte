@@ -31,12 +31,12 @@ const struct mfile map_file(const char *pathname) {
     close(fd);
     exit(1);
   }
-
+  LOG_DEBUG("Mmap %s in %p (size %zd)", pathname, file_ptr, file_size);
+  
   if (close(fd) != 0) {
     LOG_ERROR("Can't close the file: %s", pathname);
   }
 
-  LOG_DEBUG("file %s mapped in %p (size %zd)", pathname, file_ptr, file_size);
   const struct mfile res = {
     .pathname       = pathname,
     .data           = file_ptr,
@@ -52,6 +52,7 @@ void unmap_file(const struct mfile *file) {
   if (munmap(file->data, file->allocated_size) != 0) {
     LOG_ERROR("Can't munmap the file: %s (allocated size %zd)", file->pathname, file->allocated_size);
   }
+  LOG_DEBUG("Free mfile %s", file->pathname);
 }
 
 

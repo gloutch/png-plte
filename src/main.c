@@ -9,6 +9,7 @@
 #include <stdlib.h>
 
 #include "chunk.h"
+#include "image.h"
 #include "log.h"
 #include "mfile.h"
 #include "print.h"
@@ -46,8 +47,12 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  print_PNG_file(&file);  
+  // print_PNG_file(&file);
 
+  const struct image image = image_from_file(&file);
+  
+  free_image(&image);
   unmap_file(&file);
+  LOG_INFO("\tDone: everything is fine ;D");
   return 0;
 }
