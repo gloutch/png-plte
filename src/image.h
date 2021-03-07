@@ -38,6 +38,25 @@ struct image {
 };
 
 /**
+ * @brief Compute bits per pixel (one pixel may be a palette index)
+ * @param[in] depth Number of bits per sample or palette index
+ * @param[in] type Color type of the image
+ * @return bit per pixel
+ */
+uint8_t bit_per_pixel(uint8_t depth, enum color_type type);
+
+/**
+ * @brief Compute the length of a scanline
+ * @param[in] depth
+ * @param[in] type
+ * @param[in] width
+ * @return Number of byte for a pixel (or index) line in the image
+ */
+uint32_t byte_per_line(uint8_t depth, enum color_type type, uint32_t width);
+
+
+
+/**
  * @brief From PNG file to the actual image
  * @param[in] file A PNG file which may be free right after
  * @return The image

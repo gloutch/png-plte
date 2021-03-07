@@ -2,44 +2,50 @@
 #include "image.h"
 
 
+
+uint8_t bit_per_pixel(uint8_t depth, enum color_type type) {
+  switch (type) {
+  case PLTE_INDEX:
+  case GRAYSCALE:
+    return depth;
+  case GRAYSCALE_ALPHA:
+    return depth * 2;
+  case RGB_TRIPLE:
+    return depth * 3;
+  case RGB_TRIPLE_ALPHA:
+    return depth * 4;
+  }
+}
+
+
+
+uint32_t byte_per_line(uint8_t depth, enum color_type type, uint32_t width) {
+  
+  uint32_t bit_per_line = bit_per_pixel(depth, type) * width;
+
+  if (bit_per_line % 8 == 0) {
+    // no bit wasted
+    return bit_per_line / 8;
+  }
+  // add one last byte
+  LOG_INFO("The last %d bits are wasted on each scanline", 8 - (bit_per_line % 8));
+  return (bit_per_line / 8) + 1;
+}
+
+
+
 /**
  * @brief Compute the needed size for the decompression of IDAt chunk
- * @param[in] width Width of the image
- * @param[in] height Height of the image
- * @param[in] depth Number of bits per sample of palette index
- * @param[in] type Color type of the image
+ * @details Add one [filter-type](http://www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html#DR.Filtering)
+ * byte to each scanline to get the total size
+ * @param[in] depth
+ * @param[in] type
+ * @param[in] width
+ * @param[in] height
  * @return size
  */
-static uint32_t compute_image_size(uint32_t width, uint32_t height, uint8_t depth, enum color_type type) {
-
-  uint32_t bit_per_pixel = 0;
-  switch (type) {
-  case GRAYSCALE:
-  case PLTE_INDEX:
-    bit_per_pixel = depth;
-    break;
-  case GRAYSCALE_ALPHA:
-    bit_per_pixel = depth * 2;
-    break;
-  case RGB_TRIPLE:
-    bit_per_pixel = depth * 3;
-    break;
-  case RGB_TRIPLE_ALPHA:
-    bit_per_pixel = depth * 4;
-    break;
-  }
-
-  uint32_t byte_per_line = 0;
-  if ((bit_per_pixel * width) % 8 == 0) { // no bit wasted
-    byte_per_line = (bit_per_pixel * width) / 8;  
-  }
-  else { // add one last byte
-    LOG_INFO("The last %d bits are wasted on each scanline", (bit_per_pixel * width) % 8);
-    byte_per_line = ((bit_per_pixel * width) / 8) + 1;
-  }
-  byte_per_line += 1; // filter-type byte to each scanline
-
-  return byte_per_line * height;
+static uint32_t unpack_size(uint8_t depth, enum color_type type, uint32_t width, uint32_t height) {
+  return (1 + byte_per_line(depth, type, width)) * height;
 }
 
 /**
@@ -50,7 +56,7 @@ static uint32_t compute_image_size(uint32_t width, uint32_t height, uint8_t dept
  * @param[out] img_ptr Pointer to the area to fill with unpack data
  * @details IDAT chunk must be [consecutive](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.Summary-of-standard-chunks)
  */
-static void unpack_IDAT(uint32_t file_size, const uint8_t *file_ptr, uint32_t img_size, void *img_ptr) {
+static void unpack_data(uint32_t file_size, const uint8_t *file_ptr, uint32_t img_size, void *img_ptr) {
 
   // find the first IDAT chunk of the file
   struct chunk current = get_chunk(file_size, file_ptr);
@@ -128,6 +134,7 @@ const struct image image_from_file(const struct mfile *file) {
   // skip the signature and get header
   uint32_t file_size = file->size - 8;
   uint8_t *file_ptr  = ((uint8_t *) file->data) + 8;
+  // get the header chunk
   const struct chunk current = get_chunk(file_size, file_ptr);
   const struct IHDR header   = IHDR_chunk(&current);
 
@@ -141,8 +148,9 @@ const struct image image_from_file(const struct mfile *file) {
     exit(0);
   }
 
+  // compute the size of the unpack image
+  uint32_t img_size = unpack_size(header.depth, header.color_type, header.width, header.height);
   // malloc the right size
-  uint32_t img_size = compute_image_size(header.width, header.height, header.depth, header.color_type);
   void *img_data = malloc(img_size);
   if (img_data == NULL) {
     LOG_FATAL("Can't allocate %d byte to get the image", img_size);
@@ -150,17 +158,13 @@ const struct image image_from_file(const struct mfile *file) {
   }
   LOG_DEBUG("Malloc(%d) from %p", img_size, img_data);
 
-  // inflate image
+  // skip the header chunk
   file_size -= (current.length + 12);
   file_ptr  += (current.length + 12);
-  unpack_IDAT(file_size, file_ptr, img_size, img_data);
+  // inflate image
+  unpack_data(file_size, file_ptr, img_size, img_data);
 
-  // TODO unfilter and remap pixels
-  /* uint32_t byte_per_line = img_size / header.height; */
-  /* for (uint32_t i = 0; i < img_size; i += byte_per_line) { */
-  /*   uint8_t b = ((uint8_t *) img_data)[i]; */
-  /*   printf("%d ", b); */
-  /* } */
+  // TODO:unfilter
 
   struct image img = {
     .width      = header.width,

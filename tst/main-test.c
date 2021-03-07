@@ -12,14 +12,14 @@
 #include "test-mfile.h"
 #include "test-crc.h"
 #include "test-chunk.h"
+#include "test-image.h"
 
 
 CU_pSuite add_suite(const char* strName, CU_InitializeFunc pInit, CU_CleanupFunc pClean) {
   CU_pSuite suite = CU_add_suite(strName, pInit, pClean);
   if (NULL == suite) {
     CU_cleanup_registry();
-    CU_ErrorCode code = CU_get_error();
-    exit(code);
+    exit(CU_get_error());
   }
   return suite;
 }
@@ -27,8 +27,7 @@ CU_pSuite add_suite(const char* strName, CU_InitializeFunc pInit, CU_CleanupFunc
 void add_test(CU_pSuite pSuite, const char* strName, CU_TestFunc pTestFunc) {
   if (NULL == CU_add_test(pSuite, strName, pTestFunc)) {
     CU_cleanup_registry();
-    CU_ErrorCode code = CU_get_error();
-    exit(code);
+    exit(CU_get_error());
   }
 }
 
@@ -56,6 +55,12 @@ int main() {
    add_test(pSuite3, "Physical size chunk", test_physic);
    add_test(pSuite3, "Background chunk", test_bkgd);
    add_test(pSuite3, "Palette chunk", test_plte);
+
+   CU_pSuite pSuite4 = add_suite("Image", init_test_image, clean_test_image);
+   add_test(pSuite4, "bit per pixel", test_bit_per_pixel);
+   add_test(pSuite4, "byte per scanline", test_byte_per_line);
+   add_test(pSuite4, "Image from file", test_get_image);
+   
    
    /* Run all tests using the CUnit Basic interface */
    CU_basic_run_tests();
