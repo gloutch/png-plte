@@ -3,8 +3,13 @@
 
 
 void print_version(void) {
+  
+  SDL_version compiled;
+  SDL_VERSION(&compiled);
+  
   printf("Version (DEV) 0.0.1\n");
-  printf("         zlib %s\n", zlibVersion());
+  printf("   zlib %s\n", zlibVersion());
+  printf("   sdl2 %d.%d.%d\n", compiled.major, compiled.minor, compiled.patch);
   printf("\n");
 }
 

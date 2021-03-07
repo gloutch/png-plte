@@ -70,4 +70,5 @@ const struct image image_from_file(const struct mfile *file);
 void free_image(const struct image *image);
 
 
+
 #endif // __IMAGE_H__ 

@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <zlib.h>
+#include <SDL2/SDL.h>
 
 #include "chunk.h"
 #include "mfile.h"

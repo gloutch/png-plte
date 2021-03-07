@@ -10,6 +10,8 @@ The only dependency is [zlib](https://github.com/madler/zlib), feel free to chan
 
 Then **make** to compile only sources and have fun with `./bin/png-plte`
 
+> For the moment I also compile with SDL2 (it's temporary)
+
 
 
 ## Dependencies

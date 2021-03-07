@@ -13,6 +13,7 @@
 #include "log.h"
 #include "mfile.h"
 #include "print.h"
+#include "viewer.h"
 
 
 /**
@@ -32,7 +33,7 @@ void usage(int argc, char *argv[]) {
  */
 int main(int argc, char *argv[]) {
   LOG_LOG_LEVEL();
-  /* print_version(); */
+  print_version();
 
   if (argc < 2) {
     usage(argc, argv);
@@ -50,9 +51,12 @@ int main(int argc, char *argv[]) {
   // print_PNG_file(&file);
 
   const struct image image = image_from_file(&file);
+
+  view_image(&image);
   
   free_image(&image);
   unmap_file(&file);
+  
   LOG_INFO("\tDone: everything is fine ;D");
   return 0;
 }
