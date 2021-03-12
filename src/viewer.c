@@ -59,7 +59,16 @@ void view_image(const struct image *image) {
   // black background
   SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 
-  // TODO fill the screen
+  struct color png_color;
+  for (uint32_t i = 0; i < width; i++) {
+    for (uint32_t j = 0; j < height; j++) {
+
+      get_color(image, i, j, &png_color);
+      uint32_t sdl_color = SDL_MapRGBA(screen->format, png_color.red, png_color.green, png_color.blue, png_color.alpha);
+      ((uint32_t *) screen->pixels)[i * width + j] = sdl_color;
+    }
+  }
+ 
 
   SDL_UpdateWindowSurface(window);
   wait_until_close();

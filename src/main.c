@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
   const struct mfile file = map_file(argv[1]);
 
   if (!mfile_is_png(&file)) {
+    usage(argc, argv);
     LOG_FATAL("%s is not a PNG", file.pathname);
     unmap_file(&file);
     exit(1);
