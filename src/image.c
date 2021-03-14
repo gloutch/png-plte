@@ -1,6 +1,7 @@
 
 #include "image.h"
 #include "chunk.h"
+#include "filter.h"
 
 
 /**
@@ -30,16 +31,9 @@ static uint8_t count_sample(enum color_type type) {
  * @return Number of byte for a pixel (or index) line in the image
  */
 static uint32_t byte_per_line(uint8_t depth, uint8_t sample, uint32_t width) {
-  // TODO do better to round integer up  
+
   uint32_t bit_per_line = depth * sample * width;
-  
-  if (bit_per_line % 8 == 0) {
-    // no bit wasted
-    return bit_per_line / 8;
-  }
-  // add one last byte
-  LOG_INFO("The last %d bits are wasted on each scanline", 8 - (bit_per_line % 8));
-  return (bit_per_line / 8) + 1;
+  return (bit_per_line + 7) / 8; // round up to one if % 8 != 0
 }
 
 /**
@@ -168,8 +162,6 @@ const struct image image_from_png(const struct mfile *file) {
   // inflate image
   unpack_data(file_size, file_ptr, img_size, img_data);
 
-  // TODO:unfilter
-
   struct image img = {
     .width   = header.width,
     .height  = header.height,
@@ -178,6 +170,10 @@ const struct image image_from_png(const struct mfile *file) {
     .palette = NULL,
     .data    = img_data,
   };
+
+  // unfilter
+  unfilter(&img);
+
   return img;
 }
 
