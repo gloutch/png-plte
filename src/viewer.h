@@ -17,12 +17,6 @@
 
 
 /**
- * @brief Tilte of the window
- */
-#define WINDOW_TITLE "PNG viewer"
-
-
-/**
  * @brief Display the image
  * @details Blocking until the window is closed
  * @param[in] image

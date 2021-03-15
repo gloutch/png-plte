@@ -47,11 +47,14 @@ static void average_unfilter(uint32_t size, uint8_t *raw, const uint8_t *prior, 
 }
 
 /**
- * @brief [paet](http://www.libpng.org/pub/png/spec/1.2/PNG-Filters.html#Filter-type-4-Paeth)
+ * @brief Absolute function of (p - a)
  */
-#define ABS(a, b) (((a) > (b)) ? ((a) - (b)) : ((b) - (a)))
+#define ABS(p, a) (((p) >= (a)) ? ((p) - (a)) : ((a) - (p)))
 
-static uint8_t paeth(const uint8_t left, const uint8_t above, const uint8_t upper_left) {
+/**
+ * @brief The paeth predictor function
+ */
+static uint8_t paeth_predictor(const uint8_t left, const uint8_t above, const uint8_t upper_left) {
 
   int16_t a = left;
   int16_t b = above;
@@ -63,26 +66,32 @@ static uint8_t paeth(const uint8_t left, const uint8_t above, const uint8_t uppe
   b = ABS(p, b);
   c = ABS(p, c);
 
-  if ((a <= b) && (a < c)) {
+  if ((a <= b) && (a <= c)) {
     return left;
-  } else if (b < c) {
+  } else if (b <= c) {
     return above;
   } else {
     return upper_left;
   }
 }
 
+/**
+ * @brief [paeth](http://www.libpng.org/pub/png/spec/1.2/PNG-Filters.html#Filter-type-4-Paeth)
+ */
 static void paeth_unfilter(uint32_t size, uint8_t *raw, const uint8_t *prior, uint8_t bpp) {
 
   if (prior == NULL) {
+    for (uint32_t i = bpp; i < size; i++) {
+      raw[i] += raw[i - bpp];
+    }
     return;
   }
 
   for (uint32_t i = 0; i < bpp; i++) {
-    raw[i] = prior[i];
+    raw[i] += prior[i];
   }
   for (uint32_t i = bpp; i < size; i++) {
-    raw[i] += paeth(raw[i - bpp], prior[i], prior[i - bpp]);
+    raw[i] += paeth_predictor(raw[i - bpp], prior[i], prior[i - bpp]);
   }
 }
 

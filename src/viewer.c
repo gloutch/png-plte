@@ -1,6 +1,12 @@
 
 #include "viewer.h"
 
+
+/**
+ * @brief Tilte of the window
+ */
+#define WINDOW_TITLE "PNG viewer"
+
 /**
  * @brief Sleeping time before polling event (ms)
  */
@@ -60,8 +66,8 @@ void view_image(const struct image *image) {
   SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 
   struct color png_color;
-  for (uint32_t i = 0; i < width; i++) {
-    for (uint32_t j = 0; j < height; j++) {
+  for (uint32_t i = 0; i < height; i++) {
+    for (uint32_t j = 0; j < width; j++) {
 
       get_color(image, i, j, &png_color);
       uint32_t sdl_color = SDL_MapRGBA(screen->format, png_color.red, png_color.green, png_color.blue, png_color.alpha);
