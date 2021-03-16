@@ -97,14 +97,13 @@ static void paeth_unfilter(uint32_t size, uint8_t *raw, const uint8_t *prior, ui
 
 
 
-
 void unfilter(struct image *image) {
   // may be don't use a struct image
   
   uint8_t *data = image->data;
   uint32_t size = line_size(image);
   uint8_t  bpp  = (image->depth * image->sample + 7) / 8;
-
+  
   uint8_t *prior = NULL;
   uint8_t *raw = data + 1;
   

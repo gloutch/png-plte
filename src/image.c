@@ -226,7 +226,7 @@ static uint8_t *sample_pointer(const struct image *image, uint32_t i, uint32_t j
   uint32_t bit_shift = image->depth * image->sample * j;
 
   *left_shift = bit_shift % 8;
-  return image->data + (i * line_size) + 1 + (bit_shift / 8);
+  return image->data + (i * (line_size + 1)) + 1 + (bit_shift / 8);
 }
 
 /**
@@ -239,10 +239,11 @@ static uint8_t *sample_pointer(const struct image *image, uint32_t i, uint32_t j
  */
 static uint8_t get_sample(uint8_t byte, uint8_t left_shift, uint8_t depth, uint8_t *max) {
   // set the last depth bits to 1
-  uint8_t mask = (((uint16_t) 1) << (depth + 1)) - 1;
+  uint8_t mask = (((uint16_t) 1) << depth) - 1;
   // shift from the right to get the sample
   uint8_t right_shift = 8 - left_shift - depth;
 
+  *max = mask;
   return (byte >> right_shift) & mask;
 }
 

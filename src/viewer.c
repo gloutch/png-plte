@@ -70,11 +70,17 @@ void view_image(const struct image *image) {
     for (uint32_t j = 0; j < width; j++) {
 
       get_color(image, i, j, &png_color);
-      uint32_t sdl_color = SDL_MapRGBA(screen->format, png_color.red, png_color.green, png_color.blue, png_color.alpha);
+
+      // [0, max] -> [0, 255]
+      uint8_t red   = png_color.red   * 255.0 / png_color.max;
+      uint8_t green = png_color.green * 255.0 / png_color.max;
+      uint8_t blue  = png_color.blue  * 255.0 / png_color.max;
+      uint8_t alpha = png_color.alpha * 255.0 / png_color.max;
+      
+      uint32_t sdl_color = SDL_MapRGBA(screen->format, red, green, blue, alpha);
       ((uint32_t *) screen->pixels)[i * width + j] = sdl_color;
     }
   }
- 
 
   SDL_UpdateWindowSurface(window);
   wait_until_close();
