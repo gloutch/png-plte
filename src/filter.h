@@ -17,7 +17,7 @@
 
 /**
  * @brief Unfilter the whole image
- * @param[in/out] image Raw unpack image to unfilter
+ * @param[in,out] image Raw unpack image to unfilter
  */
 void unfilter(struct image *image);
 

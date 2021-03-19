@@ -45,7 +45,7 @@ Notes:
 - The first `make test` downloads the folder `tst/suite/` which is a [test-suite for PNG](http://www.schaik.com/pngsuite/) for test only
 - `make cov` is really simple but if needed I run `cd bin/ && gcov *.gcno` to see unexecuted lines in the corresponding `.c.gcov` file
 - Disable log with `LOG=NONE`, but you have a whole collection of log level in `src/log.h`
-- Take care to compile with `LOG=ALL` in order to try the compiler against every lines of code
+  - Take care to compile with `LOG=ALL` in order to try the compiler against every lines of code
 
 
 ## Documentation
