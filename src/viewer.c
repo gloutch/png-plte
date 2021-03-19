@@ -80,6 +80,7 @@ void view_image(const struct image *image) {
       uint32_t sdl_color = SDL_MapRGBA(screen->format, red, green, blue, alpha);
       ((uint32_t *) screen->pixels)[i * width + j] = sdl_color;
     }
+    // printf("r:%3-d   g:%3-d   b:%3-d   a:%3-d\n", png_color.red, png_color.green, png_color.blue, png_color.alpha);
   }
 
   SDL_UpdateWindowSurface(window);

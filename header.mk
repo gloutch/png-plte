@@ -16,7 +16,7 @@ TARGET      = $(BIN_DIR)png-plte
 TARGET_TEST = $(BIN_DIR)main-test
 
 # makefile flood
-VERBOSE = yes
+VERBOSE = nope
 ifeq ($(VERBOSE), yes)
 MAKE += -w
 else
@@ -36,5 +36,5 @@ ZLIB  = -lz
 
 # default target
 $(TARGET): $(BASEDIR)header.mk $(SRC_DIR)*
-	$(MAKE) -C $(SRC_DIR) all
+	@$(MAKE) -C $(SRC_DIR) all
 	@echo ">>> $(TARGET) <<<"

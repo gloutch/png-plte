@@ -3,3 +3,4 @@
 /bin/
 /doc/
 /tst/suite/
+/tst/*.gcda

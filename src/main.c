@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  // print_PNG_file(&file);
+  print_PNG_file(&file);
 
   const struct image image = image_from_png(&file);
 
