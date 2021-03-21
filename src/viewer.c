@@ -41,14 +41,12 @@ void view_image(const struct image *image) {
     exit(1);
   }
 
-  uint32_t width  = image->width;
-  uint32_t height = image->height;
   SDL_Window *window = SDL_CreateWindow(
     WINDOW_TITLE,
     SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED,
-    width,
-    height,
+    image->width,
+    image->height,
     SDL_WINDOW_SHOWN); // SDL_WINDOW_BORDERLESS
 
   if (window == NULL) {
@@ -62,23 +60,34 @@ void view_image(const struct image *image) {
     exit(1);
   }
 
-  // black background
-  SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));
+  // Set background color
+  SDL_FillRect(screen, NULL, SDL_MapRGB(
+    screen->format,
+    default_bg_color[0],
+    default_bg_color[1],
+    default_bg_color[2]));
 
-  struct color png_color;
-  for (uint32_t i = 0; i < height; i++) {
-    for (uint32_t j = 0; j < width; j++) {
+  for (uint32_t i = 0; i < image->height; i++) {
+    for (uint32_t j = 0; j < image->width; j++) {
 
+      struct color png_color;
       get_color(image, i, j, &png_color);
 
       // [0, max] -> [0, 255]
       uint8_t red   = png_color.red   * 255.0 / png_color.max;
       uint8_t green = png_color.green * 255.0 / png_color.max;
       uint8_t blue  = png_color.blue  * 255.0 / png_color.max;
-      uint8_t alpha = png_color.alpha * 255.0 / png_color.max;
       
-      uint32_t sdl_color = SDL_MapRGBA(screen->format, red, green, blue, alpha);
-      ((uint32_t *) screen->pixels)[i * width + j] = sdl_color;
+      // Transparency ratio [0:transparent, 1:opaque]
+      float a = (float) png_color.alpha / (float) png_color.max;
+
+      // Apply ransparency
+      red   = red   * a  + default_bg_color[0] * (1.0 - a);
+      green = green * a  + default_bg_color[1] * (1.0 - a);
+      blue  = blue  * a  + default_bg_color[2] * (1.0 - a);
+      
+      uint32_t sdl_color = SDL_MapRGB(screen->format, red, green, blue);
+      ((uint32_t *) screen->pixels)[i * image->width + j] = sdl_color;
     }
   }
 

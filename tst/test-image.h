@@ -13,5 +13,7 @@ int clean_test_image(void);
 
 void test_get_image(void);
 
+void test_image_basn0g08(void);
+
 
 #endif // __TEST_IMAGE_H__

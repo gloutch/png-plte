@@ -15,6 +15,11 @@
 #include "log.h"
 
 
+/**
+ * @brief Default background color
+ */
+static const uint8_t default_bg_color[3] = {255, 255, 255};
+
 
 /**
  * @brief Display the image
