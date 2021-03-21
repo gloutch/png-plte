@@ -66,7 +66,7 @@ And each function must be well described in it
 ```
 /**
  * @brief
- * @param[in]
+ * @param[in,out]
  * @return
  */
 ```

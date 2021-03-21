@@ -103,13 +103,15 @@ void unfilter(struct image *image) {
   uint8_t *data = image->data;
   uint32_t size = line_size(image);
   uint8_t  bpp  = (image->depth * image->sample + 7) / 8;
+  LOG_TRACE("Byte Per Pixel %d", bpp);
   
   uint8_t *prior = NULL;
   uint8_t *raw = data + 1;
   
   for (uint32_t i = 0; i < image->height; i++) {
-
-    switch (*data) {
+  
+    LOG_TRACE("line %i   filter %d", i, raw[-1]);
+    switch (raw[-1]) {
     case 0:
       break;
     case 1:
@@ -129,6 +131,7 @@ void unfilter(struct image *image) {
       exit(1);
     }
     prior = raw;
-    raw  += size + 1; 
+    raw  += size + 1;
   }
+  LOG_INFO("Unfilter done");
 }

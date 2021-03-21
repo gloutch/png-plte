@@ -116,7 +116,7 @@ static void unpack_data(uint32_t file_size, const uint8_t *file_ptr, uint32_t im
     exit(1);
   }
 
-  // inflate end
+  // end inflate
   err = inflateEnd(&stream);
   if (err != Z_OK) {
     LOG_FATAL("InflateEnd failed, returned %d", err);
@@ -205,9 +205,9 @@ static void *pixel_pointer(const struct image *image, uint32_t i, uint32_t j) {
   assert((image->depth == 8) || (image->depth == 16));
 
   uint8_t pixel_size = (image->depth / 8) * image->sample;
-  uint32_t line_size = 1 + (pixel_size * image->width);
+  uint32_t line_size = pixel_size * image->width;
 
-  return image->data + (i * line_size) + 1 + (pixel_size * j);
+  return image->data + (i * (line_size + 1)) + 1 + (pixel_size * j);
 }
 
 /**
@@ -290,10 +290,11 @@ void get_color(const struct image *image, uint32_t i, uint32_t j, struct color *
       color->alpha = 0xff;
       color->max   = 0xff;
     } else { // depth 16
-      uint16_t * ptr = pixel_pointer(image, i, j);
-      color->red   = ptr[0];
-      color->green = ptr[0];
-      color->blue  = ptr[0];
+      uint16_t *ptr = pixel_pointer(image, i, j);
+      uint16_t gray = ntohs(ptr[0]);
+      color->red   = gray;
+      color->green = gray;
+      color->blue  = gray;
       color->alpha = 0xffff;
       color->max   = 0xffff;
     }
@@ -308,10 +309,11 @@ void get_color(const struct image *image, uint32_t i, uint32_t j, struct color *
       color->max   = 0xff;
     } else { // depth 16
       uint16_t *ptr = pixel_pointer(image, i, j);
-      color->red   = ptr[0];
-      color->green = ptr[0];
-      color->blue  = ptr[0];
-      color->alpha = ptr[1];
+      uint16_t gray = ntohs(ptr[0]);
+      color->red   = gray;
+      color->green = gray;
+      color->blue  = gray;
+      color->alpha = ntohs(ptr[1]);
       color->max   = 0xffff;
     }
     break;
@@ -325,9 +327,9 @@ void get_color(const struct image *image, uint32_t i, uint32_t j, struct color *
       color->max   = 0xff;
     } else { // depth 16
       uint16_t *ptr = pixel_pointer(image, i, j);
-      color->red   = ptr[0];
-      color->green = ptr[1];
-      color->blue  = ptr[2];
+      color->red   = ntohs(ptr[0]);
+      color->green = ntohs(ptr[1]);
+      color->blue  = ntohs(ptr[2]);
       color->alpha = 0xffff;
       color->max   = 0xffff;
     }
@@ -342,10 +344,10 @@ void get_color(const struct image *image, uint32_t i, uint32_t j, struct color *
       color->max   = 0xff;
     } else { // depth 16
       uint16_t *ptr = pixel_pointer(image, i, j);
-      color->red   = ptr[0];
-      color->green = ptr[1];
-      color->blue  = ptr[2];
-      color->alpha = ptr[3];
+      color->red   = ntohs(ptr[0]);
+      color->green = ntohs(ptr[1]);
+      color->blue  = ntohs(ptr[2]);
+      color->alpha = ntohs(ptr[3]);
       color->max   = 0xffff;
     }
     break;
