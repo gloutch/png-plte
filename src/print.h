@@ -8,8 +8,7 @@
 #define __PRINT_H__
 
 #include <stdio.h>
-#include <zlib.h>
-#include <SDL2/SDL.h>
+#include <string.h>
 
 #include "chunk.h"
 #include "mfile.h"
@@ -17,8 +16,15 @@
 
 /**
  * @brief Print version on stdout
+ * @param[in] exec Name of the executable
  */
-void print_version(void);
+void print_version(const char *exec);
+
+/**
+ * @brief Print the CLI help
+ * @param[in] exec Name of the executable
+ */
+void print_help(const char *exec);
 
 /**
  * @brief Print the chunk as one liner

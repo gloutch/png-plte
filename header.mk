@@ -37,4 +37,4 @@ ZLIB  = -lz
 # default target
 $(TARGET): $(BASEDIR)header.mk $(SRC_DIR)*
 	@$(MAKE) -C $(SRC_DIR) all
-	@echo ">>> $(TARGET) <<<"
+	@echo $(TARGET)

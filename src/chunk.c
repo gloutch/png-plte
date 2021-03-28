@@ -20,12 +20,7 @@ static const char * const public_type_value[NB_PUBLIC_CHUNK] = {
   "tEXt", "zTXt", "iTXt", "bKGD", "pHYs", "sBIT", "sPLT", "hIST", "tIME"
 };
 
-/**
- * @brief Convert type value from png to enumerate value
- * @param[in] type Deserialized chunk type value
- * @return The corresponding enum value or UNKN
- */
-static enum chunk_type chunk_type_value_to_enum(uint32_t type) {
+enum chunk_type chunk_type_value_to_enum(uint32_t type) {
 
   for (int i = 0; i < NB_PUBLIC_CHUNK; i++) {
     if (type == UINT32_FROM_PTR(public_type_value[i])) {

@@ -1,19 +1,47 @@
 #include "print.h"
 
+#include <zlib.h>
+#include <SDL2/SDL.h>
 
 
-void print_version(void) {
+static const char *basename(const char *exec) {
   
-  printf("Version (DEV) 0.0.1\n");
-  printf("   zlib %s\n", zlibVersion());
+  const char *name = strrchr(exec, '/');
+  if (name == NULL) {
+    return exec;
+  }
+  return name + 1;
+}
+
+
+void print_version(const char *exec) {
+
+  printf("version: 0.0.1 (DEV)\n");
+  printf("  using: zlib %s\n", zlibVersion());
   
   SDL_version compiled;
   SDL_VERSION(&compiled);
-  printf("   sdl2 %d.%d.%d\n", compiled.major, compiled.minor, compiled.patch);
-  
-  printf("\n");
+  printf("         sdl2 %d.%d.%d\n", compiled.major, compiled.minor, compiled.patch);
 }
 
+
+void print_help(const char *exec) {
+  print_version(exec);
+  printf("\n");
+  
+  const char *name = basename(exec);
+  
+  printf("usage: %s [option] [file]\n", name);
+  printf("option:\n");
+  printf("        --version              Print version\n");
+  printf("        --help                 List available commandes\n");
+  printf("        --chunk                Print all chunks in the file\n");
+  printf("        --display              Display the file\n");
+  printf("        --bmp=<filename>       Save file into a BMP file\n");
+  printf("\n");
+
+  printf("source: https://github.com/gloutch/png-plte\n");
+}
 
 
 static void print_IHDR(const struct IHDR *chunk) {

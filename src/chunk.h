@@ -66,11 +66,20 @@ enum chunk_type {
 };
 
 /**
+ * @brief Convert type value from png to enumerate value
+ * @param[in] type Deserialized chunk type value
+ * @return The corresponding enum value or UNKN
+ */
+enum chunk_type chunk_type_value_to_enum(uint32_t type);
+
+/**
  * @brief Convert enum chunk_type to chunk type value
  * @param[in] type (!= UKWN)
  * @return Type value
  */
 uint32_t enum_to_type_value(enum chunk_type type);
+
+
 
 /**
  * @brief Generic [chunk layout](http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html#Chunk-layout)

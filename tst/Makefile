@@ -15,7 +15,7 @@ ALL_SRC = $(filter-out $(SRC_DIR)main.c, $(SRC_SOURCES)) $(TST_SOURCES)
 
 
 
-.PHONY: run-test prepare
+.PHONY: run-test run-suite prepare
 
 run-test: prepare $(TARGET_TEST) 
 	$(TARGET_TEST)
@@ -24,6 +24,9 @@ $(TARGET_TEST): $(TST_HEADERS) $(SRC_SOURCES) $(ALL_SRC)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $(CUNIT) $(ZLIB) $(SDL) -I$(SRC_DIR) $(ALL_SRC) -o $(TARGET_TEST)
 
+
+run-suite: run-suite.py $(TARGET) $(SUITE_FOLDER)
+	python3 run-suite.py $(TARGET) $(SUITE_FOLDER)
 
 
 # Download png test suite
