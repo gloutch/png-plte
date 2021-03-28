@@ -31,46 +31,20 @@ static void wait_until_close(void) {
   }
 }
 
-
-
-void view_image(const struct image *image) {
-
-  int err = SDL_Init(SDL_INIT_VIDEO);
-  if (err != 0) {
-    LOG_FATAL("Can't init SDL, returned %d", err);
-    exit(1);
-  }
-
-  SDL_Window *window = SDL_CreateWindow(
-    WINDOW_TITLE,
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    image->width,
-    image->height,
-    SDL_WINDOW_SHOWN); // SDL_WINDOW_BORDERLESS
-
-  if (window == NULL) {
-    LOG_FATAL("Can't create a window");
-    exit(1);
-  }
-
-  SDL_Surface *screen = SDL_GetWindowSurface(window);
-  if (screen == NULL) {
-    LOG_FATAL("Can't get the window surface");
-    exit(1);
-  }
-
-  // Set background color
-  SDL_FillRect(screen, NULL, SDL_MapRGB(
-    screen->format,
-    default_bg_color[0],
-    default_bg_color[1],
-    default_bg_color[2]));
+/**
+ * @brief Copy image on an SDL_Surface
+ * @param[in] image
+ * @param[in,out] suface
+ */
+static void image_on_surface(const struct image *image, SDL_Surface *surface) {
+  assert(image->width  == surface->w);
+  assert(image->height == surface->h);
+  
+  struct color png_color;
 
   for (uint32_t i = 0; i < image->height; i++) {
     for (uint32_t j = 0; j < image->width; j++) {
 
-      struct color png_color;
       get_color(image, i, j, &png_color);
 
       // [0, max] -> [0, 255]
@@ -86,13 +60,63 @@ void view_image(const struct image *image) {
       green = green * a  + default_bg_color[1] * (1.0 - a);
       blue  = blue  * a  + default_bg_color[2] * (1.0 - a);
       
-      uint32_t sdl_color = SDL_MapRGB(screen->format, red, green, blue);
-      ((uint32_t *) screen->pixels)[i * image->width + j] = sdl_color;
+      uint32_t sdl_color = SDL_MapRGB(surface->format, red, green, blue);
+      ((uint32_t *) surface->pixels)[i * image->width + j] = sdl_color;
     }
   }
+}
+
+
+
+void view_image(const struct image *image) {
+
+  if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    LOG_FATAL("Can't init SDL: %s", SDL_GetError());
+    exit(1);
+  }
+
+  SDL_Window *window = SDL_CreateWindow(
+    WINDOW_TITLE,
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    image->width,
+    image->height,
+    SDL_WINDOW_SHOWN); // SDL_WINDOW_BORDERLESS
+
+  if (window == NULL) {
+    LOG_FATAL("Can't create a window: %s", SDL_GetError());
+    exit(1);
+  }
+
+  SDL_Surface *screen = SDL_GetWindowSurface(window);
+  if (screen == NULL) {
+    LOG_FATAL("Can't get the window surface: %s", SDL_GetError());
+    exit(1);
+  }
+
+  image_on_surface(image, screen);
 
   SDL_UpdateWindowSurface(window);
   wait_until_close();
   SDL_DestroyWindow(window);
   SDL_Quit();
+}
+
+
+void save_image_as_bmp(const struct image *image, const char *filename) {
+
+  // create surface with default mask and depth
+  SDL_Surface *surface = SDL_CreateRGBSurface(0, image->width, image->height, 32, 0, 0, 0, 0);
+  if (surface == NULL) {
+    LOG_FATAL("Can't create the SDL_Surface: %s", SDL_GetError());
+    exit(1);
+  }
+
+  image_on_surface(image, surface);
+
+  if (SDL_SaveBMP(surface, filename) != 0) {
+    LOG_FATAL("Can't save surface as BMP: %s", SDL_GetError());
+    exit(1);
+  }
+  LOG_INFO("Write %s", filename);
 }

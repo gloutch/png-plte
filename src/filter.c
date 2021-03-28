@@ -103,7 +103,7 @@ void unfilter(struct image *image) {
   uint8_t *data = image->data;
   uint32_t size = line_size(image);
   uint8_t  bpp  = (image->depth * image->sample + 7) / 8;
-  LOG_TRACE("Byte Per Pixel %d", bpp);
+  LOG_DEBUG("Byte Per Pixel %d   depth %d", bpp, image->depth);
   
   uint8_t *prior = NULL;
   uint8_t *raw = data + 1;

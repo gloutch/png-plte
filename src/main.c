@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   const char *file_name = NULL;
   const char *opt_param = NULL;
   enum command_option option = arg_parse(argc, argv, &opt_param, &file_name);
-  LOG_INFO("Option %d   param %s   file %s", option, opt_param, file_name);
+  LOG_INFO("Option %d   opt-param %s   file %s", option, opt_param, file_name);
 
   
   /*
@@ -53,7 +53,6 @@ int main(int argc, char *argv[]) {
     printf("wrong command line\n");
     return 1;
 
-  case CMD_BMP:
   case CMD_PLTE:
     printf("Not handled yet\n");
     return 0;
@@ -84,6 +83,13 @@ int main(int argc, char *argv[]) {
   case CMD_DISPLAY: {
     const struct image image = image_from_png(&file);
     view_image(&image);
+    free_image(&image);
+    break;
+  }
+    
+  case CMD_BMP: {
+    const struct image image = image_from_png(&file);
+    save_image_as_bmp(&image, opt_param);
     free_image(&image);
     break;
   }

@@ -49,11 +49,11 @@ static uint32_t unpack_size(const struct IHDR *header) {
 
 /**
  * @brief Consume all IDAT chunk to inflate all image data (using zlib only in this function)
+ * @details IDAT chunk must be [consecutive](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.Summary-of-standard-chunks)
  * @param[in] file_size
  * @param[in] file_ptr Allocated file content (pointer to the begining of a chunk before IDAT)
  * @param[in] img_size Size allocated starting at img_ptr
  * @param[out] img_ptr Pointer to the area to fill with unpack data
- * @details IDAT chunk must be [consecutive](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html#C.Summary-of-standard-chunks)
  */
 static void unpack_data(uint32_t file_size, const uint8_t *file_ptr, uint32_t img_size, void *img_ptr) {
 
@@ -140,11 +140,11 @@ const struct image image_from_png(const struct mfile *file) {
   // limitation
   if (header.color_type == PLTE_INDEX) {
     LOG_FATAL("Color type (PLTE) not handle YET");
-    exit(0);
+    exit(1);
   }
   if (header.interlace == 1) {
     LOG_FATAL("Interlacing methode (ADAM7) no handle YET");
-    exit(0);
+    exit(1);
   }
 
   // compute the size of the unpack image

@@ -7,7 +7,7 @@
 .PHONY: clean doc test cov help
 
 clean:
-	@rm -f *~ \#*\#
+	@rm -f *~ \#*\# *.bmp
 	@rm -rf $(BIN_DIR) $(DOC_DIR) $(BIN_DIR)*.gcda
 
 doc:
