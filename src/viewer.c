@@ -51,7 +51,6 @@ static void image_on_surface(const struct image *image, SDL_Surface *surface) {
       uint8_t red   = png_color.red   * 255.0 / png_color.max;
       uint8_t green = png_color.green * 255.0 / png_color.max;
       uint8_t blue  = png_color.blue  * 255.0 / png_color.max;
-      printf("[%02d,%02d] r:%03d  g:%03d  b:%03d\n", i, j, red, green, blue);
       
       // Transparency ratio [0:transparent, 1:opaque]
       float a = (float) png_color.alpha / (float) png_color.max;

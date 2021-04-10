@@ -18,12 +18,12 @@ int clean_test_image(void) {
 
 void test_get_image(void) {
 
-  const struct mfile file = map_file("suite/basn0g08.png");
+  const struct mfile file = map_file("suite/basn0g02.png");
   const struct image img  = image_from_png(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
-  CU_ASSERT_EQUAL(img.depth, 8);
+  CU_ASSERT_EQUAL(img.depth, 2);
   CU_ASSERT_EQUAL(img.sample, 1);
   CU_ASSERT_EQUAL(img.palette, NULL);
   
@@ -100,6 +100,108 @@ void test_image_basn2c16(void) {
       // compare blue to ref[] backward for the last i value
       CU_ASSERT_EQUAL(c.blue, (j < 32 - i ? 0 : ref[(31 - i) + (31 - j)]));
       CU_ASSERT_EQUAL(c.alpha, ref[0]);
+    }
+  }
+  
+  free_image(&img);
+  unmap_file(&file);
+}
+
+
+void test_image_basn4a08(void) {
+
+  const struct mfile file = map_file("suite/basn4a08.png");
+  const struct image img  = image_from_png(&file);
+
+  CU_ASSERT_EQUAL(img.width, 32);
+  CU_ASSERT_EQUAL(img.height, 32);
+  CU_ASSERT_EQUAL(img.depth, 8);
+  CU_ASSERT_EQUAL(img.sample, 2);
+  CU_ASSERT_EQUAL(img.palette, NULL);
+
+  const uint16_t ref[] =
+    {  0,   8,  16,  24,  32,  41,  49,  57,
+      65,  74,  82,  90,  98, 106, 115, 123,
+     131, 139, 148, 156, 164, 172, 180, 189,
+     197, 205, 213, 222, 230, 238, 246, 255};   
+
+  for (uint8_t i = 0; i < 32; i++) {
+    for (uint8_t j = 0; j < 32; j++) {
+
+      struct color c;
+      get_color(&img, i, j, &c);
+
+      CU_ASSERT_EQUAL(c.red, ref[31 - i]);
+      CU_ASSERT_EQUAL(c.green, ref[31 - i]);
+      CU_ASSERT_EQUAL(c.blue, ref[31 - i]);
+      CU_ASSERT_EQUAL(c.alpha, ref[j]);
+    }
+  }
+  
+  free_image(&img);
+  unmap_file(&file);
+}
+
+
+void test_image_pp0n6a08(void) {
+  
+  const struct mfile file = map_file("suite/pp0n6a08.png");
+  const struct image img  = image_from_png(&file);
+
+  CU_ASSERT_EQUAL(img.width, 32);
+  CU_ASSERT_EQUAL(img.height, 32);
+  CU_ASSERT_EQUAL(img.depth, 8);
+  CU_ASSERT_EQUAL(img.sample, 4);
+  CU_ASSERT_EQUAL(img.palette, NULL);
+
+  const uint16_t ref[] =
+    {  0,   8,  16,  24,  32,  41,  49,  57,
+      65,  74,  82,  90,  98, 106, 115, 123,
+     131, 139, 148, 156, 164, 172, 180, 189,
+     197, 205, 213, 222, 230, 238, 246, 255};   
+
+  struct color c;
+  int16_t value;
+  
+  value = 255;
+  for (uint8_t i = 0; i < 8; i++) {
+    for (uint8_t j = 0; j < 32; j++) {
+      get_color(&img, i, j, &c);
+      CU_ASSERT_EQUAL(c.red, 255);
+      CU_ASSERT_EQUAL(c.green, 255);
+      CU_ASSERT_EQUAL(c.blue, value--);
+      CU_ASSERT_EQUAL(c.alpha, ref[j]);
+    }
+  }
+  value = 255;
+  for (uint8_t i = 8; i < 16; i++) {
+    for (uint8_t j = 0; j < 32; j++) {
+      get_color(&img, i, j, &c);
+      CU_ASSERT_EQUAL(c.red, 255);
+      CU_ASSERT_EQUAL(c.green, value--);
+      CU_ASSERT_EQUAL(c.blue, 255);
+      CU_ASSERT_EQUAL(c.alpha, ref[j]);
+    }
+  }
+  value = 255;
+  for (uint8_t i = 16; i < 24; i++) {
+    for (uint8_t j = 0; j < 32; j++) {
+      get_color(&img, i, j, &c);
+      CU_ASSERT_EQUAL(c.red, value--);
+      CU_ASSERT_EQUAL(c.green, 255);
+      CU_ASSERT_EQUAL(c.blue, 255);
+      CU_ASSERT_EQUAL(c.alpha, ref[j]);
+    }
+  }
+  value = 255;
+  for (uint8_t i = 24; i < 32; i++) {
+    for (uint8_t j = 0; j < 32; j++) {
+      get_color(&img, i, j, &c);
+      CU_ASSERT_EQUAL(c.red, value);
+      CU_ASSERT_EQUAL(c.green, value);
+      CU_ASSERT_EQUAL(c.blue, value);
+      CU_ASSERT_EQUAL(c.alpha, ref[j]);
+      value--;
     }
   }
   
