@@ -13,6 +13,7 @@
 
 #include "image.h"
 #include "log.h"
+#include "color.h"
 
 
 /**

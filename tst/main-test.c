@@ -59,6 +59,7 @@ int main() {
    CU_pSuite pSuite4 = add_suite("Image", init_test_image, clean_test_image);
    add_test(pSuite4, "Image from file", test_get_image);
    add_test(pSuite4, "Image basn0g08.png", test_image_basn0g08);
+   add_test(pSuite4, "Image basn2c16.png", test_image_basn2c16);
    
    
    /* Run all tests using the CUnit Basic interface */

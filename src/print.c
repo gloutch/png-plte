@@ -15,7 +15,6 @@ static const char *basename(const char *exec) {
 
 
 void print_version(const char *exec) {
-
   printf("version: 0.0.1 (DEV)\n");
   printf("  using: zlib %s\n", zlibVersion());
   
@@ -26,9 +25,6 @@ void print_version(const char *exec) {
 
 
 void print_help(const char *exec) {
-  print_version(exec);
-  printf("\n");
-  
   const char *name = basename(exec);
   
   printf("usage: %s [option] [file]\n", name);

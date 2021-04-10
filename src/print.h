@@ -29,7 +29,7 @@ void print_help(const char *exec);
 /**
  * @brief Print the chunk as one liner
  * @param[in] chunk
- * @param[out] header Needed to print some chunk (NULL is fine if you are sure header isn't needed)
+ * @param[in] header Needed to print some chunk (NULL is fine if you are sure header isn't needed)
  */
 void print_chunk(const struct chunk *chunk, const struct IHDR *header);
 

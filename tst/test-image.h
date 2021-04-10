@@ -15,5 +15,7 @@ void test_get_image(void);
 
 void test_image_basn0g08(void);
 
+void test_image_basn2c16(void);
+
 
 #endif // __TEST_IMAGE_H__
