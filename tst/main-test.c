@@ -13,6 +13,7 @@
 #include "test-crc.h"
 #include "test-chunk.h"
 #include "test-image.h"
+#include "test-filter.h"
 
 
 CU_pSuite add_suite(const char* strName, CU_InitializeFunc pInit, CU_CleanupFunc pClean) {
@@ -62,7 +63,12 @@ int main() {
   add_test(pSuite4, "Image pixel per pixel basn2c16.png", test_image_basn2c16);
   add_test(pSuite4, "Image pixel per pixel basn4a08.png", test_image_basn4a08);
   add_test(pSuite4, "Image pixel per pixel pp0n6a08.png", test_image_pp0n6a08);
-   
+
+  CU_pSuite pSuite5 = add_suite("Filter", init_test_filter, clean_test_filter);
+  add_test(pSuite5, "Sub (1)", test_filter_sub);
+  add_test(pSuite5, "Up (2)", test_filter_up);
+  add_test(pSuite5, "Average (3)", test_filter_average);
+  add_test(pSuite5, "Paeth (4)", test_filter_paeth);
    
   /* Run all tests using the CUnit Basic interface */
   CU_basic_run_tests();

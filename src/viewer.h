@@ -18,8 +18,14 @@
 
 /**
  * @brief Default background color
+ * @details Alpha channel is unused
  */
-static const uint8_t default_bg_color[3] = {255, 255, 255};
+static const SDL_Color default_bg_color = {
+  .r = 255,
+  .g = 255,
+  .b = 255,
+  .a = 255,
+};
 
 
 /**

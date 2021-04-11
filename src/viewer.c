@@ -46,8 +46,8 @@ static void image_on_surface(const struct image *image, SDL_Surface *surface) {
     for (uint32_t j = 0; j < image->width; j++) {
 
       get_color(image, i, j, &png_color);
-
-      // [0, max] -> [0, 255]
+        
+      // png color [0, max] -> sdl [0, 255]
       uint8_t red   = png_color.red   * 255.0 / png_color.max;
       uint8_t green = png_color.green * 255.0 / png_color.max;
       uint8_t blue  = png_color.blue  * 255.0 / png_color.max;
@@ -56,9 +56,9 @@ static void image_on_surface(const struct image *image, SDL_Surface *surface) {
       float a = (float) png_color.alpha / (float) png_color.max;
 
       // Apply ransparency
-      red   = red   * a  + default_bg_color[0] * (1.0 - a);
-      green = green * a  + default_bg_color[1] * (1.0 - a);
-      blue  = blue  * a  + default_bg_color[2] * (1.0 - a);
+      red   = red   * a  + default_bg_color.r * (1.0 - a);
+      green = green * a  + default_bg_color.g * (1.0 - a);
+      blue  = blue  * a  + default_bg_color.b * (1.0 - a);
       
       uint32_t sdl_color = SDL_MapRGB(surface->format, red, green, blue);
       ((uint32_t *) surface->pixels)[i * image->width + j] = sdl_color;
