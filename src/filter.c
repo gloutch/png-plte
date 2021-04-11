@@ -110,7 +110,7 @@ void unfilter(struct image *image) {
   
   for (uint32_t i = 0; i < image->height; i++) {
   
-    LOG_TRACE("line %i   filter %d", i, raw[-1]);
+    LOG_TRACE("line %-3d   filter %d", i, raw[-1]);
     switch (raw[-1]) {
     case 0:
       break;

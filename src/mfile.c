@@ -49,10 +49,10 @@ const struct mfile map_file(const char *pathname) {
 
 
 void unmap_file(const struct mfile *file) {
+  LOG_DEBUG("Unmap %p mfile %s", file->data, file->pathname);
   if (munmap(file->data, file->allocated_size) != 0) {
-    LOG_ERROR("Can't munmap the file: %s (allocated size %zd)", file->pathname, file->allocated_size);
+    LOG_WARN("Can't munmap the file: %s (allocated size %zd)", file->pathname, file->allocated_size);
   }
-  LOG_DEBUG("Free mfile %s", file->pathname);
 }
 
 

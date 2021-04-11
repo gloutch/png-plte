@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
   switch (option) {
 
   case CMD_NONE:
+    print_help(exec_name);
     return 0;
     
   case CMD_VERSION:
