@@ -1,3 +1,7 @@
+#include <arpa/inet.h>
+#include <assert.h>
+#include <stddef.h>
+
 #include "color.h"
 
 
@@ -15,7 +19,7 @@ static void *pixel_pointer(const struct image *image, uint32_t i, uint32_t j) {
   uint8_t psize = (image->depth / 8) * image->sample;
   uint32_t lsize = psize * image->width;
 
-  return image->data + (i * (lsize + 1)) + 1 + (psize * j);
+  return image->data + (i * lsize) + (psize * j);
 }
 
 /**
@@ -34,7 +38,7 @@ static uint8_t *sample_pointer(const struct image *image, uint32_t i, uint32_t j
   uint32_t bit_shift = image->depth * image->sample * j;
 
   *left_shift = bit_shift % 8;
-  return image->data + (i * (lsize + 1)) + 1 + (bit_shift / 8);
+  return image->data + (i * lsize) + (bit_shift / 8);
 }
 
 /**

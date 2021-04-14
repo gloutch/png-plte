@@ -9,9 +9,6 @@
 #define __CLI_H__
 
 #include <getopt.h>
-#include <string.h>
-
-#include "log.h"
 
 
 /**

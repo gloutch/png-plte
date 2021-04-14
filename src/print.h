@@ -7,9 +7,6 @@
 #ifndef __PRINT_H__
 #define __PRINT_H__
 
-#include <stdio.h>
-#include <string.h>
-
 #include "chunk.h"
 #include "mfile.h"
 

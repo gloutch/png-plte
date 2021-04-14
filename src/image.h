@@ -8,14 +8,8 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
-
-#include <assert.h>
-#include <arpa/inet.h>
 #include <stdint.h>
-#include <unistd.h>
-#include <zlib.h>
 
-#include "log.h"
 #include "mfile.h"
 
 

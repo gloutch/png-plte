@@ -1,4 +1,9 @@
+#include <assert.h>
+#include <stdint.h>
+#include <stdlib.h>
 
+#include "color.h"
+#include "log.h"
 #include "viewer.h"
 
 

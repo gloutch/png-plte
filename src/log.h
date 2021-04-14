@@ -92,22 +92,22 @@
  * @brief Log the LOG_LEVEL compiled with (as non classic log)
  */
 #if (LOG_LEVEL == ALL)
-  #define LOG_LOG_LEVEL() puts("Log level -> ALL")
+  #define LOG_LOG_LEVEL() puts("Log level  ALL")
 
 #elif (LOG_LEVEL == DEBUG)
-  #define LOG_LOG_LEVEL() puts("Log level -> DEBUG")
+  #define LOG_LOG_LEVEL() puts("Log level  DEBUG")
 
 #elif (LOG_LEVEL == INFO)
-  #define LOG_LOG_LEVEL() puts("Log level -> INFO")
+  #define LOG_LOG_LEVEL() puts("Log level  INFO")
 
 #elif (LOG_LEVEL == WARN)
-  #define LOG_LOG_LEVEL() puts("Log level -> WARNING")
+  #define LOG_LOG_LEVEL() puts("Log level  WARNING")
 
 #elif (LOG_LEVEL == ERROR)
-  #define LOG_LOG_LEVEL() puts("Log level -> ERROR")
+  #define LOG_LOG_LEVEL() puts("Log level  ERROR")
 
 #elif (LOG_LEVEL == FATAL)
-  #define LOG_LOG_LEVEL() puts("Log level -> FATAL")
+  #define LOG_LOG_LEVEL() puts("Log level  FATAL")
 
 #else // LOG_LEVEL == NONE
   #define LOG_LOG_LEVEL()

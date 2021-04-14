@@ -8,15 +8,7 @@
 #ifndef __MFILE_H__
 #define __MFILE_H__
 
-#include <assert.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "log.h"
+#include <stdint.h>
 
 
 /**

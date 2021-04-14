@@ -8,14 +8,7 @@
 #ifndef __CHUNK_H__
 #define __CHUNK_H__
 
-#include <assert.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
-
-#include "log.h"
-#include "crc.h"
-
 
 
 // generic chunk layout

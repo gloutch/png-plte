@@ -1,5 +1,7 @@
+#include <stdlib.h>
 
 #include "filter.h"
+#include "log.h"
 
 
 /**
@@ -97,18 +99,14 @@ static void paeth_unfilter(uint32_t size, uint8_t *raw, const uint8_t *prior, ui
 
 
 
-void unfilter(struct image *image) {
-  // may be don't use a struct image
+void unfilter(uint8_t *data, uint32_t length, uint32_t height, uint8_t bpp) {
+  LOG_INFO("Unfilter");
   
-  uint8_t *data = image->data;
-  uint32_t size = line_size(image);
-  uint8_t  bpp  = (image->depth * image->sample + 7) / 8;
-  LOG_DEBUG("Byte Per Pixel %d   depth %d", bpp, image->depth);
-  
+  uint32_t size = length - 1;
   uint8_t *prior = NULL;
   uint8_t *raw = data + 1;
   
-  for (uint32_t i = 0; i < image->height; i++) {
+  for (uint32_t i = 0; i < height; i++) {
   
     LOG_TRACE("line %-3d   filter %d", i, raw[-1]);
     switch (raw[-1]) {
@@ -127,11 +125,11 @@ void unfilter(struct image *image) {
       paeth_unfilter(size, raw, prior, bpp);
       break;
     default:
-      LOG_FATAL("Unknown filter-byte %d", *raw);
+      LOG_FATAL("Unknown filter-byte %d", raw[-1]);
       exit(1);
     }
     prior = raw;
-    raw  += size + 1;
+    raw  += length;
   }
   LOG_INFO("Unfilter done");
 }

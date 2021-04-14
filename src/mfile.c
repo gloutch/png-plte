@@ -1,5 +1,12 @@
 
+#include <assert.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
+#include "log.h"
 #include "mfile.h"
 
 
@@ -49,7 +56,7 @@ const struct mfile map_file(const char *pathname) {
 
 
 void unmap_file(const struct mfile *file) {
-  LOG_DEBUG("Unmap %p mfile %s", file->data, file->pathname);
+  LOG_INFO("Unmap %p mfile %s", file->data, file->pathname);
   if (munmap(file->data, file->allocated_size) != 0) {
     LOG_WARN("Can't munmap the file: %s (allocated size %zd)", file->pathname, file->allocated_size);
   }

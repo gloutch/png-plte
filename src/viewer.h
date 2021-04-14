@@ -6,14 +6,9 @@
 #ifndef __VIEWER_H__
 #define __VIEWER_H__
 
-
 #include <SDL2/SDL.h>
-#include <stdint.h>
-#include <stdlib.h>
 
 #include "image.h"
-#include "log.h"
-#include "color.h"
 
 
 /**

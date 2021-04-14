@@ -7,8 +7,6 @@
 #ifndef __COLOR_H__
 #define __COLOR_H__
 
-#include <assert.h>
-
 #include "image.h"
 
 

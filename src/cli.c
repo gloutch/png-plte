@@ -1,7 +1,7 @@
+#include <string.h>
+
 #include "cli.h"
-
-#include "chunk.h"
-
+#include "log.h"
 
 
 /**

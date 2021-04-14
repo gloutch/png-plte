@@ -1,5 +1,10 @@
+#include <arpa/inet.h>
+#include <assert.h>
+#include <stdlib.h>
 
 #include "chunk.h"
+#include "crc.h"
+#include "log.h"
 
 
 #define UINT32_FROM_PTR(ptr) (*((uint32_t *) (ptr)))
