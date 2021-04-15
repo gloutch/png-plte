@@ -8,6 +8,7 @@
 #ifndef __MFILE_H__
 #define __MFILE_H__
 
+#include <stddef.h>
 #include <stdint.h>
 
 

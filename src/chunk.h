@@ -8,6 +8,7 @@
 #ifndef __CHUNK_H__
 #define __CHUNK_H__
 
+#include <stddef.h>
 #include <stdint.h>
 
 

@@ -34,7 +34,7 @@ static uint8_t count_sample(enum color_type type) {
  * @param[in] depth Count of bit per sample
  * @param[in] sample Count of sample per pixel
  * @param[in] width Count of pixel
- * @return Number of byte for a pixel scanline in the image
+ * @return Number of byte for a scanline in the image
  */
 static uint32_t byte_per_line(uint8_t depth, uint8_t sample, uint32_t width) {
   uint32_t bit_per_line = depth * sample * width;
@@ -49,7 +49,7 @@ static uint32_t byte_per_line(uint8_t depth, uint8_t sample, uint32_t width) {
 #define ADAM7_PASS (7)
 
 /**
- * @brief Adam7 layout pattern
+ * @brief Adam7 layout [pattern](http://www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html#DR.Interlaced-data-order)
  */
 static const uint8_t adam7_pattern[ADAM7_SIZE * ADAM7_SIZE] =
   {0, 5, 3, 5, 1, 5, 3, 5,
@@ -66,87 +66,49 @@ static const uint8_t adam7_pattern[ADAM7_SIZE * ADAM7_SIZE] =
  * @details This data structure must help working with interlaced image
  */
 struct adam7 {
-  /** @brief Pattern for [interlacing](http://www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html#DR.Interlaced-data-order) */
-  const uint8_t *pattern;
-  /** @brief Pointer to the passes (including filter bytes) */
-  uint8_t *pass[ADAM7_PASS];
   /** @brief Width of the passes (in pixel) */
   uint32_t width[ADAM7_PASS];
   /** @brief Height of the passes (in pixel) */
   uint32_t height[ADAM7_PASS];
-  /** @brief Length of a scanline (in byte) */
-  uint32_t lsize[ADAM7_PASS];
 };
 
 /**
  * @brief Set info about the interlacing layout
  * @param[in] header
- * @param[out] p
+ * @return adam7 structure
  */
-static void adam7_pass_layout(const struct IHDR *header, struct adam7 *p) {
-  p->pattern = adam7_pattern;
-  // pass 0:
-  p->width[0]  = (header->width + 7) / 8; // divide by 8 (round up to one)
-  p->height[0] = (header->height + 7) / 8;
-  // pass 1:
-  p->width[1]  = (header->width + 7 - 4) / 8; // same and starting at index 4
-  p->height[1] = (header->height + 7) / 8;
-  // pass 2:
-  p->width[2]  = (header->width + 3) / 4;
-  p->height[2] = (header->height + 7 - 4) / 8;
-  // pass 3:
-  p->width[3]  = ((header->width + 7 - 2) / 8) + ((header->width + 7 - 6) / 8);
-  p->height[3] = (header->height + 3) / 4;
-  // pass 4:
-  p->width[4]  = (header->width + 1) / 2;
-  p->height[4] = ((header->height + 7 - 2) / 8) + ((header->height + 7 - 6) / 8);
-  // pass 5:
-  p->width[5]  = (header->width + 1 - 1) / 2;
-  p->height[5] = (header->height + 1) / 2;
-  // pass 6:
-  p->width[6]  = header->width;
-  p->height[6] = (header->height + 1 - 1) / 2;
+static const struct adam7 adam7_pass_layout(const struct IHDR *header) {
+  struct adam7 p;
 
-  LOG_DEBUG("[%d,%d]  ->  passes  0:[%d,%d]  1[%d,%d]  2[%d,%d]  3[%d,%d]  4[%d,%d]  5[%d,%d]  6[%d,%d]",
-            header->width, header->height, p->width[0], p->height[0], p->width[1], p->height[1], p->width[2], p->height[2],
-            p->width[3], p->height[3], p->width[4], p->height[4], p->width[5], p->height[5], p->width[6], p->height[6]);
+  // pass 0
+  p.width[0]  = (header->width + 7) / 8; // divide by 8 (round up to one)
+  p.height[0] = (header->height + 7) / 8;
+  // pass 1
+  p.width[1]  = (header->width + 7 - 4) / 8; // same and starting at index 4
+  p.height[1] = (header->height + 7) / 8;
+  // pass 2
+  p.width[2]  = (header->width + 3) / 4;
+  p.height[2] = (header->height + 7 - 4) / 8;
+  // pass 3
+  p.width[3]  = ((header->width + 7 - 2) / 8) + ((header->width + 7 - 6) / 8);
+  p.height[3] = (header->height + 3) / 4;
+  // pass 4
+  p.width[4]  = (header->width + 1) / 2;
+  p.height[4] = ((header->height + 7 - 2) / 8) + ((header->height + 7 - 6) / 8);
+  // pass 5
+  p.width[5]  = (header->width + 1 - 1) / 2;
+  p.height[5] = (header->height + 1) / 2;
+  // pass 6
+  p.width[6]  = header->width;
+  p.height[6] = (header->height + 1 - 1) / 2;
 
-  uint8_t sample = count_sample(header->color_type);
-  for (uint8_t i = 0; i < ADAM7_PASS; i++) {
-    p->lsize[i] = byte_per_line(header->depth, sample, p->width[i]);
-  }
+  LOG_DEBUG("[%d,%d]  ->  passes  0:[%d,%d]  1[%d,%d]  2[%d,%d]  3[%d,%d]  4[%d,%d]  5[%d,%d]  6[%d,%d]", header->width, header->height,
+            p.width[0], p.height[0], p.width[1], p.height[1], p.width[2], p.height[2], p.width[3], p.height[3],
+            p.width[4], p.height[4], p.width[5], p.height[5], p.width[6], p.height[6]);
+  return p;
 }
 
 
-
-/**
- * @brief Compute the needed size for the decompression of IDAt chunk
- * @details Add one [filter-type byte](http://www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html#DR.Filtering)
- * to each scanline to get the total size
- * @param[in] header Header chunk of the imahe
- * @return size
- */
-static uint32_t unpack_size(const struct IHDR *header) {
-  assert((header->interlace == 0) || (header->interlace == 1));
-
-  if (header->interlace == 0) {
-    // no interlacing
-    return header-> height * (1 + byte_per_line(header->depth, count_sample(header->color_type), header->width));
-  }
-  else {
-    // interlace Adam7
-    uint32_t size = 0;
-    struct adam7 passes;
-    adam7_pass_layout(header, &passes);
-
-    for (uint8_t p = 0; p < ADAM7_PASS; p++) { // iterate on passes
-      if (passes.width[p] * passes.height[p]) {
-        size += passes.height[p] * (1 + passes.lsize[p]);
-      }
-    }
-    return size;
-  }
-}
 
 /**
  * @brief Consume all IDAT chunk to inflate all image data (using zlib only in this function)
@@ -171,7 +133,7 @@ static void unpack_data(uint32_t fsize, const uint8_t *fptr, uint32_t img_size, 
   stream.next_out  = img_ptr;
   stream.avail_out = img_size;
   LOG_INFO("Inflate IDAT ...");
-  
+
   // inflate init
   int err = inflateInit(&stream);
   if (err != Z_OK) {
@@ -184,16 +146,16 @@ static void unpack_data(uint32_t fsize, const uint8_t *fptr, uint32_t img_size, 
 
     while (stream.avail_in > 0) {
       err = inflate(&stream, Z_NO_FLUSH); // consume data in the chunk
-      
+
       if (err == Z_STREAM_END) {
-        break; // zlib know it is the last IDAT 
+        break; // zlib know it is the last IDAT
       }
       if (err != Z_OK) {
         LOG_FATAL("Inflate failed, returned %d", err);
         exit(1);
       }
     }
-    
+
     // get the next IDAT to consume
     fsize -= (current.length + 12);
     fptr  += (current.length + 12);
@@ -222,19 +184,19 @@ static void unpack_data(uint32_t fsize, const uint8_t *fptr, uint32_t img_size, 
 
 
 /**
- * @brief Unpack IDAT chunk, unfilter image (no interlace image)
+ * @brief Unpack IDAT chunk, unfilter image (NO interlace image)
  * @param[in] header Header chunk of the file
- * @param[in] fsize Size if after fptr
+ * @param[in] fsize Size after fptr
  * @param[in] fptr Pointer to file content (first IDAT chunk)
  * @return The final image
  */
 static struct image image_from_IDAT(const struct IHDR *hdr, uint32_t fsize, const uint8_t *fptr) {
   assert(hdr->interlace == 0); // no interlace
 
-  // compute unpack size
-  uint8_t sample = count_sample(hdr->color_type); // number of sample in a pixel
-  uint32_t lsize = byte_per_line(hdr->depth, sample, hdr->width); // length of a line
-  uint32_t unpack_size = hdr->height * (1 + lsize);
+  // needed constants, compute unpack size
+  const uint8_t sample = count_sample(hdr->color_type); // number of sample in a pixel
+  const uint32_t lsize = byte_per_line(hdr->depth, sample, hdr->width); // length of a line
+  const uint32_t unpack_size = hdr->height * (1 + lsize);
 
   // malloc
   void *data = malloc(unpack_size);
@@ -242,6 +204,7 @@ static struct image image_from_IDAT(const struct IHDR *hdr, uint32_t fsize, cons
     LOG_FATAL("Can't malloc(%d) to unpack image", unpack_size);
     exit(1);
   }
+  LOG_INFO("Malloc(%d) at %p", unpack_size, data);
 
   // unpack
   unpack_data(fsize, fptr, unpack_size, data);
@@ -257,7 +220,7 @@ static struct image image_from_IDAT(const struct IHDR *hdr, uint32_t fsize, cons
     memcpy(dst, src, lsize);
   }
 
-  // return value
+  // image
   struct image r = {
     .width   = hdr->width,
     .height  = hdr->height,
@@ -268,6 +231,81 @@ static struct image image_from_IDAT(const struct IHDR *hdr, uint32_t fsize, cons
   };
   return r;
 }
+
+
+/**
+ * @brief Unpack IDAT chunk, unfilter image (interlace ADAM7)
+ * @param[in] header Header chunk of the file
+ * @param[in] fsize Size after fptr
+ * @param[in] fptr Pointer to file content (first IDAT chunk)
+ * @return The final image
+ */
+static struct image image_from_IDAT_adam7(const struct IHDR *hdr, uint32_t fsize, const uint8_t *fptr) {
+  assert(hdr->interlace == 1);
+
+  // needed constants, compute unpack size
+  const uint8_t sample = count_sample(hdr->color_type);
+  const struct adam7 interlace = adam7_pass_layout(hdr);
+
+  uint32_t unpack_size = 0;
+  uint32_t lsize[ADAM7_PASS];
+
+  for (uint8_t i = 0; i < ADAM7_PASS; i++) {
+    lsize[i] = byte_per_line(hdr->depth, sample, interlace.width[i]);
+    unpack_size += interlace.height[i] * (1 + lsize[i]); // add the filter type-byte
+  }
+
+  // malloc
+  void *unpack = malloc(unpack_size);
+  if (unpack == NULL) {
+    LOG_FATAL("Can't malloc(%d) to unpack image", unpack_size);
+    exit(1);
+  }
+
+  // unpack
+  unpack_data(fsize, fptr, unpack_size, unpack);
+
+  // unfilter
+  uint8_t *pass[ADAM7_PASS];
+  uint8_t bpp = (hdr->depth * sample + 7) / 8;
+
+  pass[0] = unpack;
+  unfilter(unpack, 1 + lsize[0], interlace.height[0], bpp);
+
+  for (uint8_t i = 1; i < ADAM7_PASS; i++) {
+    pass[i] = pass[i - 1] + interlace.height[i - 1] * (1 + lsize[i - 1]);
+    unfilter(pass[i], 1 + lsize[i], interlace.height[i], bpp);
+  }
+
+  // compute new size
+  uint32_t bwidth = lsize[6];
+  void *data = malloc(bwidth * hdr->height);
+  if (data == NULL) {
+    LOG_FATAL("Can't malloc(%d) to remap adam7 interlace pixel", bwidth * hdr->height);
+    exit(1);
+  }
+
+  // remap pixels
+  // TODO six first passes
+  for (uint32_t i = 1; i < hdr->height; i += 2) { // last pass is easy to remap
+    uint8_t *src = pass[6] + ((i / 2) * (1 + lsize[6])) + 1;
+    uint8_t *dst = data + (i * bwidth);
+    memcpy(dst, src, bwidth);
+  }
+  free(unpack);
+
+  // image
+  struct image r = {
+    .width   = hdr->width,
+    .height  = hdr->height,
+    .depth   = hdr->depth,
+    .sample  = sample,
+    .palette = NULL,
+    .data    = data,
+  };
+  return r;
+}
+
 
 
 const struct image image_from_png(const struct mfile *file) {
@@ -288,7 +326,6 @@ const struct image image_from_png(const struct mfile *file) {
     exit(1);
   }
 
-
   // find the first IDAT chunk
   while (current.type != IDAT) {
     fsize -= (current.length + 12); // chunk size
@@ -301,8 +338,7 @@ const struct image image_from_png(const struct mfile *file) {
     return image_from_IDAT(&header, fsize, fptr);
   }
   else {
-    LOG_FATAL("Interlacing methode (ADAM7) no handle YET");
-    exit(1);
+    return image_from_IDAT_adam7(&header, fsize, fptr);
   }
 }
 
@@ -318,4 +354,3 @@ void free_image(const struct image *image) {
   LOG_INFO("Free image %p", image->data);
   free(image->data);
 }
-
