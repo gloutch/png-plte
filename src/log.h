@@ -20,16 +20,18 @@
 #define TRACE  (1)
 /** @brief diagnostic, program data like pointers */
 #define DEBUG  (2)
+/** @brief special for dynamic memory and free */
+#define ALLOC  (3)
 /** @brief normal behavior and milestones */ 
-#define INFO   (3)
+#define INFO   (4)
 /** @brief what might be a problem */
-#define WARN   (4)
+#define WARN   (5)
 /** @brief error occurs but the program limps along */
-#define ERROR  (5)
+#define ERROR  (6)
 /** @brief juste before aborting */
-#define FATAL  (6)
+#define FATAL  (7)
 /** @brief quiet, no log at all */
-#define NONE   (7)
+#define NONE   (8)
 
 /** @brief default log level */
 #ifndef LOG_LEVEL
@@ -59,6 +61,13 @@
   #define LOG_DEBUG(...)
 #endif
 
+/** @brief compiled debug log macro */
+#if (LOG_LEVEL <= ALLOC)
+  #define LOG_ALLOC(fmt, ...) LOG_PREFIX("ALLOC"); printf((fmt), ##__VA_ARGS__); puts("")
+#else
+  #define LOG_ALLOC(...)
+#endif
+  
 /** @brief compiled info log macro */
 #if (LOG_LEVEL <= INFO)
   #define LOG_INFO(fmt, ...) LOG_PREFIX("INFO"); printf((fmt), ##__VA_ARGS__); puts("")
@@ -94,8 +103,14 @@
 #if (LOG_LEVEL == ALL)
   #define LOG_LOG_LEVEL() puts("Log level  ALL")
 
+#elif (LOG_LEVEL == TRACE)
+  #define LOG_LOG_LEVEL() puts("Log level  TRACE")
+
 #elif (LOG_LEVEL == DEBUG)
   #define LOG_LOG_LEVEL() puts("Log level  DEBUG")
+
+#elif (LOG_LEVEL == ALLOC)
+  #define LOG_LOG_LEVEL() puts("Log level  ALLOC")
 
 #elif (LOG_LEVEL == INFO)
   #define LOG_LOG_LEVEL() puts("Log level  INFO")

@@ -78,6 +78,7 @@ struct adam7 {
  * @return adam7 structure
  */
 static const struct adam7 adam7_pass_layout(const struct IHDR *header) {
+  LOG_INFO("Adam7 layout from [%d,%d] img", header->width, header->height);
   struct adam7 p;
 
   // pass 0
@@ -204,7 +205,7 @@ static struct image image_from_IDAT(const struct IHDR *hdr, uint32_t fsize, cons
     LOG_FATAL("Can't malloc(%d) to unpack image", unpack_size);
     exit(1);
   }
-  LOG_INFO("Malloc(%d) at %p", unpack_size, data);
+  LOG_ALLOC("Malloc(%d) at %p", unpack_size, data);
 
   // unpack
   unpack_data(fsize, fptr, unpack_size, data);
@@ -261,6 +262,7 @@ static struct image image_from_IDAT_adam7(const struct IHDR *hdr, uint32_t fsize
     LOG_FATAL("Can't malloc(%d) to unpack image", unpack_size);
     exit(1);
   }
+  LOG_ALLOC("Malloc(%d) packed interlace img %p", unpack_size, unpack);
 
   // unpack
   unpack_data(fsize, fptr, unpack_size, unpack);
@@ -284,6 +286,7 @@ static struct image image_from_IDAT_adam7(const struct IHDR *hdr, uint32_t fsize
     LOG_FATAL("Can't malloc(%d) to remap adam7 interlace pixel", bwidth * hdr->height);
     exit(1);
   }
+  LOG_ALLOC("Malloc(%d) image %p", bwidth * hdr->height, data);
 
   // remap pixels
   // TODO six first passes
@@ -292,6 +295,7 @@ static struct image image_from_IDAT_adam7(const struct IHDR *hdr, uint32_t fsize
     uint8_t *dst = data + (i * bwidth);
     memcpy(dst, src, bwidth);
   }
+  LOG_ALLOC("Free %p", unpack);
   free(unpack);
 
   // image
@@ -351,6 +355,6 @@ uint32_t line_size(const struct image *image) {
 
 
 void free_image(const struct image *image) {
-  LOG_INFO("Free image %p", image->data);
+  LOG_ALLOC("Free image %p", image->data);
   free(image->data);
 }

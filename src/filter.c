@@ -100,7 +100,7 @@ static void paeth_unfilter(uint32_t size, uint8_t *raw, const uint8_t *prior, ui
 
 
 void unfilter(uint8_t *data, uint32_t length, uint32_t height, uint8_t bpp) {
-  LOG_INFO("Unfilter");
+  LOG_INFO("Begin %d line", height);
   
   uint32_t size = length - 1;
   uint8_t *prior = NULL;
@@ -131,5 +131,5 @@ void unfilter(uint8_t *data, uint32_t length, uint32_t height, uint8_t bpp) {
     prior = raw;
     raw  += length;
   }
-  LOG_INFO("Unfilter done");
+  LOG_INFO("Done");
 }
