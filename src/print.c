@@ -39,6 +39,7 @@ void print_help(const char *exec) {
   printf("        --chunk                Print all chunks in the file\n");
   printf("        --display              Display the file\n");
   printf("        --bmp=<filename>       Save file into a BMP file\n");
+  printf("        --passes               Save all passes as <file>(i).bmp (must be an interlaced image)\n");
   printf("\n");
 
   printf("source: https://github.com/gloutch/png-plte\n");

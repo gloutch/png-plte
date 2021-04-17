@@ -31,6 +31,8 @@ enum command_option {
   CMD_BMP = 6,
   /** @brief Get the palette */
   CMD_PLTE = 7,
+  /** @brief Get all passes of an interlace image */
+  CMD_PASS = 8,
 };
 
 /**
@@ -44,6 +46,7 @@ static const struct option long_option[] = {
   {"display", no_argument,       NULL, 'd'},
   {"bmp",     required_argument, NULL, 'b'},
   {"plte",    no_argument,       NULL, 'p'},
+  {"passes",  no_argument,       NULL, 'a'},
   {NULL,      0,                 NULL,  0 },
 };
 

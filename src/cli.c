@@ -47,6 +47,11 @@ enum command_option arg_parse(int argc, char *const *argv, const char **opt_para
       opt_index = index;
       break;
 
+    case 'a':
+      option = CMD_PASS;
+      opt_index = index;
+      break;
+      
     case 'd':
       option = CMD_DISPLAY;
       opt_index = index;

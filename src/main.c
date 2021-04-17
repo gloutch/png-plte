@@ -4,8 +4,10 @@
  * @details
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "cli.h"
 #include "chunk.h"
@@ -14,6 +16,12 @@
 #include "mfile.h"
 #include "print.h"
 #include "viewer.h"
+
+
+/** @brief max size of buffer */
+#define BUFFER_SIZE (64U)
+/** @brief Static buffer */
+static char tmp_buffer[BUFFER_SIZE];
 
 
 
@@ -82,17 +90,35 @@ int main(int argc, char *argv[]) {
     break;
 
   case CMD_DISPLAY: {
-    const struct image image = image_from_png(&file);
+    const struct image image = get_image(&file);
     view_image(&image);
     free_image(&image);
     break;
   }
     
   case CMD_BMP: {
-    const struct image image = image_from_png(&file);
+    const struct image image = get_image(&file);
     save_image_as_bmp(&image, opt_param);
     free_image(&image);
     break;
+  }
+
+  case CMD_PASS: {
+
+    // TODO check size!!!
+    char *c = stpcpy(tmp_buffer, file_name) - 4;
+    assert(*c == '.');
+    char *nb = stpcpy(c, "(?).bmp") - 6;
+    assert(*nb == '?');
+
+    struct image pass[ADAM7_NB_PASS];
+    get_adam7_passes(&file, pass);
+    
+    for (uint8_t p = 0; p < ADAM7_NB_PASS; p++) {
+      *nb = '0' + p + 1; // char 'p + 1'
+      save_image_as_bmp(pass + p, tmp_buffer);
+    }
+    free_passes(pass);
   }
 
   default:;

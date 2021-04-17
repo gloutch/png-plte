@@ -14,7 +14,7 @@ static struct image reference;
 
 int init_test_filter(void) {
   const struct mfile file = map_file("suite/f00n0g08.png");
-  reference = image_from_png(&file);
+  reference = get_image(&file);
   unmap_file(&file);
   return 0;
 }
@@ -28,7 +28,7 @@ int clean_test_filter(void) {
 void test_filter_sub(void) {
 
   const struct mfile file = map_file("suite/f01n0g08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -56,7 +56,7 @@ void test_filter_sub(void) {
 void test_filter_up(void) {
 
   const struct mfile file = map_file("suite/f02n0g08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -84,7 +84,7 @@ void test_filter_up(void) {
 void test_filter_average(void) {
 
   const struct mfile file = map_file("suite/f03n0g08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -112,7 +112,7 @@ void test_filter_average(void) {
 void test_filter_paeth(void) {
 
   const struct mfile file = map_file("suite/f04n0g08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);

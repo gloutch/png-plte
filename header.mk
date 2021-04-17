@@ -25,7 +25,7 @@ endif
 
 # compilation
 CC     = cc
-LOG    = NONE
+LOG    = FATAL
 COV    = -O0 -fprofile-arcs -ftest-coverage
 CFLAGS = -std=c99 -Wall -DLOG_LEVEL=$(LOG)
 

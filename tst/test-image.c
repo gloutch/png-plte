@@ -19,7 +19,7 @@ int clean_test_image(void) {
 void test_get_image(void) {
 
   const struct mfile file = map_file("suite/basn0g02.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -35,7 +35,7 @@ void test_get_image(void) {
 void test_image_basn0g08(void) {
 
   const struct mfile file = map_file("suite/basn0g08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -75,7 +75,7 @@ void test_image_basn0g08(void) {
 void test_image_basn2c16(void) {
 
   const struct mfile file = map_file("suite/basn2c16.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -111,7 +111,7 @@ void test_image_basn2c16(void) {
 void test_image_basn4a08(void) {
 
   const struct mfile file = map_file("suite/basn4a08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
@@ -146,7 +146,7 @@ void test_image_basn4a08(void) {
 void test_image_pp0n6a08(void) {
   
   const struct mfile file = map_file("suite/pp0n6a08.png");
-  const struct image img  = image_from_png(&file);
+  const struct image img  = get_image(&file);
 
   CU_ASSERT_EQUAL(img.width, 32);
   CU_ASSERT_EQUAL(img.height, 32);
