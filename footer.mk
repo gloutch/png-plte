@@ -4,11 +4,17 @@
 # > must include globals.mk first
 #
 
-.PHONY: clean doc test cov help
+.PHONY: distclean clean doc test cov help
+
+distclean: clean
+	@rm -rf $(BIN_DIR) $(DOC_DIR)
+	@rm -rf $(LIB_DIR)zlib.h $(LIB_DIR)libz.a $(LIB_DIR)zlib-*
+	@rm -rf $(TST_DIR)suite
 
 clean:
 	@rm -f *~ \#*\# *.bmp
-	@rm -rf $(BIN_DIR) $(DOC_DIR) $(BIN_DIR)*.gcda
+	@rm -f $(TARGET_EXEC) $(TARGET_TEST)
+	@rm -f $(BIN_DIR)*.gcda
 
 doc:
 	cd $(BASEDIR) && doxygen Doxyfile | grep warning | echo "Warnings:"
@@ -26,9 +32,10 @@ cov:
 	@cd $(TST_DIR) && gcov ../bin/*.gcno --no-output
 
 help:
-	@echo "make        : compile only sources ($(TARGET))"
-	@echo "make clean  : clean compilation"
-	@echo "make doc    : generate Doxygen files (html)"
-	@echo "make test   : compile and run tests (maybe use LOG=NONE)"
-	@echo "make cov    : recompile all sources and run tests silently, then print coverage"
+	@echo "make           : compile only sources ($(TARGET))"
+	@echo "make clean     : clean compilation files"
+	@echo "make distclean : reset the folder as fresh new"
+	@echo "make doc       : generate Doxygen files (html)"
+	@echo "make test      : compile and run tests (maybe use LOG=NONE)"
+	@echo "make cov       : recompile all sources and run tests silently, then print coverage"
 	@echo

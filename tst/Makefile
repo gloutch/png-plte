@@ -27,19 +27,20 @@ $(TARGET_TEST): $(TST_HEADERS) $(SRC_SOURCES) $(ALL_SRC)
 
 
 # Download png test suite
-SUITE_FOLDER=suite
-TEST_SUITE_URL=http://www.schaik.com/pngsuite/PngSuite-2017jul19.tgz
+TEST_SUITE_FOLDER = suite
+TEST_SUITE_URL    = http://www.schaik.com/pngsuite/PngSuite-2017jul19.tgz
 
-prepare: $(SUITE_FOLDER)
+prepare: $(TEST_SUITE_FOLDER)
 
-$(SUITE_FOLDER):
-	mkdir $(SUITE_FOLDER)
+$(TEST_SUITE_FOLDER):
+	mkdir $@
+	@echo "downloading test suite from $(TEST_SUITE_URL)"
 	curl $(TEST_SUITE_URL) --output suite.tar --progress-bar
-	tar zxf suite.tar --directory $(SUITE_FOLDER)
+	tar zxf suite.tar --directory $@
 	rm suite.tar
 
-run-suite: run-suite.sh $(TARGET) $(SUITE_FOLDER)
-	bash $< $(TARGET) $(SUITE_FOLDER)
+run-suite: run-suite.sh $(TARGET) $(TEST_SUITE_FOLDER)
+	bash $< $(TARGET) $(TEST_SUITE_FOLDER)
 
 
 
