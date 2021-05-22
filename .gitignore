@@ -5,3 +5,5 @@
 /tst/suite/
 /tst/*.gcda
 *.bmp
+/lib/zlib*
+/lib/*.a
