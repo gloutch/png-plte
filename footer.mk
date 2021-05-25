@@ -32,7 +32,7 @@ cov:
 	@cd $(TST_DIR) && gcov ../bin/*.gcno --no-output
 
 help:
-	@echo "make           : compile only sources ($(TARGET))"
+	@echo "make           : compile only sources ($(TARGET_EXEC))"
 	@echo "make clean     : clean compilation files"
 	@echo "make distclean : reset the folder as fresh new"
 	@echo "make doc       : generate Doxygen files (html)"

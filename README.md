@@ -6,21 +6,20 @@ Play with [PNG format](http://www.libpng.org/pub/png/spec/1.2/PNG-Contents.html)
 
 ## TLDR - Quick compile
 
-The only dependency is [zlib](https://github.com/madler/zlib), feel free to change **ZLIB=-lz** in `header.mk` to link correclty
+No dependency, just **make** to compile sources and have fun with `./bin/png-plte`
 
-Then **make** to compile only sources and have fun with `./bin/png-plte`
-
-> For the moment I also compile with SDL2 (it's temporary)
+> For the moment I also compile with `libsdl2-dev` (but it's temporary)
 
 
 
 ## Dependencies
 
-I want **as few dependecies as possible**, however I'm sorry to use extra tools during development...
+I want **as few dependecies as possible**
 
-You do not need all of them, just those used for the specific makefile command, which I list here
+However I need [zlib](http://zlib.net/). `lib/makefile` downloads a tar version and compiles the static lib so you do not need to install it. Feel free to edit `ZLIB` variable is `header.mk` to link to different sources.
 
-- `make`: [zlib](https://github.com/madler/zlib) linked with `ZLIB=-lz`
+You do not need all the next packages, just those used for the specific makefile command which I list here
+
 - `make test`: [CUnit](http://cunit.sourceforge.net/index.html) (only `<CUnit/Basic.h>`) linked with `CUNIT=-lcunit`
 - `make cov`: [gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) compiling options are in the variable `COV=-O0 -fprofile-arcs -ftest-coverage`
 - `make doc`: [Doxygen](https://www.doxygen.nl/manual/commands.html)
@@ -35,11 +34,11 @@ I had a raw idea about how I wanted to build my project so I basicaly throw few 
 
 Here are the basic guidelines I had:
 - Outsource building in `bin/`
-- Recursive makefiles in `src/` and `tst/`
+- Recursive makefiles in `src/`, `lib/` and `tst/`
 - Makefile constantes in `header.mk` (included in other makefiles)
 - Global targets in `footer.mk` (included in other makefiles as well)
 
-Run `make help` to have target descriptions (it's pretty simple though and they are in the above section) 
+Run `make help` to have target descriptions (it's pretty simple though) 
 
 Notes:
 - The first `make test` downloads the folder `tst/suite/` which is a [test-suite for PNG](http://www.schaik.com/pngsuite/) for test only
